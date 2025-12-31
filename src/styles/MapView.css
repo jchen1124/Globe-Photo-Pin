@@ -1,0 +1,29 @@
+/* Style for the 'Use My Location' button in MapView */
+/* .mapview-location-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+  padding: 8px 12px;
+  background: #ccd6f6;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.mapview-location-btn:hover {
+  background: #b3c2e6;
+}
+.location-button {
+  position: "absolute";
+  top: 20;
+  left: 20;
+  zindex: 1;
+  padding: "8px 12px";
+  background: "white";
+  borderradius: "6px";
+  cursor: "pointer";
+} */

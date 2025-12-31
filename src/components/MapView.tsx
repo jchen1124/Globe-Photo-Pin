@@ -16,13 +16,54 @@ const MapView = () => {
     zoom: 1.5,
   });
 
+  // Marker
   const [selectedLocation, setSelectedLocation] = useState<{
     longitude: number;
     latitude: number;
   } | null>(null);
 
+  // Function to get and use the user's current location
+  const useCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setViewState((prevState) => ({
+            ...prevState,
+            latitude,
+            longitude,
+            zoom: 10,
+          }));
+          setSelectedLocation({
+            latitude,
+            longitude,
+          });
+        },
+        (error) => {
+          alert("Unable to retrieve your location");
+          console.error(error);
+        }
+      );
+    }
+  };
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
+      <button
+        style={{
+          position: "absolute",
+          top: 20,
+          left: 20,
+          zIndex: 1,
+          padding: "8px 12px",
+          background: "white",
+          borderRadius: "6px",
+          cursor: "pointer",
+        }}
+        onClick={useCurrentLocation}
+      >
+        Use My Location
+      </button>
       <Map
         {...viewState}
         onMove={(evt: { viewState: MapViewState }) =>

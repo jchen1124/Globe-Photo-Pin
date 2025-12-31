@@ -1,12 +1,13 @@
 import MapView from "./components/MapView";
 
 
-function App(){
+
+function App() {
   return (
-    <div>
+    <div style={{ width: '100%', height: '100%' }}>
       <MapView />
     </div>
-  )
+  );
 }
 
 export default App;
