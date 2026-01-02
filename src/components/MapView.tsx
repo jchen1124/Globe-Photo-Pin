@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Map, { Marker } from "react-map-gl/mapbox";
+import Form from "./Form";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
 
@@ -11,7 +12,6 @@ type MapViewState = {
 };
 
 const MapView = () => {
-
   // Map View State
   const [viewState, setViewState] = useState<MapViewState>({
     longitude: 0,
@@ -51,12 +51,8 @@ const MapView = () => {
   };
 
   return (
-    <div style={{width: "100vw", height: "100vh" }}>
-
-      <button
-        className="use-location-btn"
-        onClick={useCurrentLocation}
-      >
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <button className="use-location-btn" onClick={useCurrentLocation}>
         Use My Location
       </button>
 
@@ -72,7 +68,7 @@ const MapView = () => {
             longitude: lng,
             latitude: lat,
           });
-          
+
           // call show form
 
           console.log("Clicked location:", lng, lat);
@@ -90,7 +86,31 @@ const MapView = () => {
             <div style={{ fontSize: "35px", cursor: "pointer" }}>📍</div>
           </Marker>
         )}
+
+        {selectedLocation && (
+          <button
+            className="remove-marker-btn"
+            onClick={() => setSelectedLocation(null)}
+          >
+            Remove Pin
+          </button>
+        )}
+
       </Map>
+
+      {/* Show form overlay */}
+      {selectedLocation && (
+        <div className="form-overlay">
+          <Form
+            location={selectedLocation}
+            onClose={() => setSelectedLocation(null)}
+            onSubmit={(data) => {
+              console.log("Form submitted with data:", data);
+              setSelectedLocation(null);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

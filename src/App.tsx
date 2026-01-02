@@ -1,4 +1,5 @@
 import MapView from "./components/MapView";
+import "./styles/Global.css";
 
 function App() {
   return (
