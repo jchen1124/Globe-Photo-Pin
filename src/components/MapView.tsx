@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Map, { Marker } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
+import "../styles/MapView.css";
 
 type MapViewState = {
   longitude: number;
@@ -10,13 +11,15 @@ type MapViewState = {
 };
 
 const MapView = () => {
+
+  // Map View State
   const [viewState, setViewState] = useState<MapViewState>({
     longitude: 0,
     latitude: 20,
     zoom: 1.5,
   });
 
-  // Marker
+  // Pin Marker State
   const [selectedLocation, setSelectedLocation] = useState<{
     longitude: number;
     latitude: number;
@@ -48,22 +51,15 @@ const MapView = () => {
   };
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div style={{width: "100vw", height: "100vh" }}>
+
       <button
-        style={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          zIndex: 1,
-          padding: "8px 12px",
-          background: "white",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
+        className="use-location-btn"
         onClick={useCurrentLocation}
       >
         Use My Location
       </button>
+
       <Map
         {...viewState}
         onMove={(evt: { viewState: MapViewState }) =>
@@ -76,12 +72,15 @@ const MapView = () => {
             longitude: lng,
             latitude: lat,
           });
+          
+          // call show form
 
           console.log("Clicked location:", lng, lat);
         }}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
       >
+        {/* Place Marker */}
         {selectedLocation && (
           <Marker
             latitude={selectedLocation.latitude}
