@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Map, { Marker } from "react-map-gl/mapbox";
 import Form from "./Form";
+import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
 
@@ -95,7 +96,6 @@ const MapView = () => {
             Remove Pin
           </button>
         )}
-
       </Map>
 
       {/* Show form overlay */}
@@ -104,9 +104,14 @@ const MapView = () => {
           <Form
             location={selectedLocation}
             onClose={() => setSelectedLocation(null)}
-            onSubmit={(data) => {
-              console.log("Form submitted with data:", data);
-              setSelectedLocation(null);
+            onSubmit={async (formData) => {
+              try {
+                await axios.post("http://localhost:3001/posts", formData);
+                alert("Form submitted successfully!");
+                setSelectedLocation(null);
+              } catch (error) {
+                console.error("Error submitting form:", error);
+              }
             }}
           />
         </div>
