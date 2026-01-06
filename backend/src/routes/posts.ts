@@ -26,4 +26,15 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
+// Get all posts from the database
+router.get("/", async (req, res) => {
+    try{
+        const result = await pool.query("SELECT * FROM posts ORDER BY created_at DESC");
+        res.json(result.rows)
+    }catch(error){
+        console.error("Error fetching posts:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
 export default router;

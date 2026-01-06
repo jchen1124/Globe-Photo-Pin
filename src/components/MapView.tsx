@@ -1,5 +1,5 @@
-import { useState } from "react";
-import Map, { Marker } from "react-map-gl/mapbox";
+import { useState, useEffect } from "react";
+import Map, { Marker, Popup } from "react-map-gl/mapbox";
 import Form from "./Form";
 import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -10,6 +10,15 @@ type MapViewState = {
   latitude: number;
   zoom: number;
   [key: string]: any;
+};
+
+type Post = {
+  id: number;
+  latitude: number;
+  longitude: number;
+  image_url: string;
+  description: string;
+  created_at: string;
 };
 
 const MapView = () => {
@@ -25,6 +34,22 @@ const MapView = () => {
     longitude: number;
     latitude: number;
   } | null>(null);
+
+  // Posts State
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  // Selected Post State
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  // Fetch posts from backend
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch("http://localhost:3001/posts");
+      const data = await response.json();
+      setPosts(data);
+    };
+    fetchPosts();
+  }, []);
 
   // Function to get and use the user's current location
   const useCurrentLocation = () => {
@@ -50,6 +75,17 @@ const MapView = () => {
       );
     }
   };
+
+  const ZoomtoPost = () => {
+    if (selectedPost) {
+      setViewState((prevState) => ({
+        ...prevState,
+        latitude: selectedPost.latitude,
+        longitude: selectedPost.longitude,
+        zoom: 15,
+      }));
+    }
+  }
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -95,6 +131,47 @@ const MapView = () => {
           >
             Remove Pin
           </button>
+        )}
+
+        {/* Show pins from database */}
+        {posts.map((post) => (
+          <Marker
+            key={post.id}
+            latitude={post.latitude}
+            longitude={post.longitude}
+            anchor="bottom"
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              setSelectedPost(post);
+            }}
+          >
+            <div style={{ fontSize: "35px", cursor: "pointer" }}>🚩</div>
+          </Marker>
+        ))}
+
+        {/* Show selected post details */}
+        {selectedPost && (
+          <Popup
+            latitude={selectedPost.latitude}
+            longitude={selectedPost.longitude}
+            onClose={() => setSelectedPost(null)}
+            closeOnClick={false}
+            anchor="top"
+          >
+            <div style={{ maxWidth: "200px" }}>
+              <button className="zoom-selected-post" onClick={ZoomtoPost}>
+                Zoom to Post
+              </button>
+              <img
+                src={`http://localhost:3001/uploads/${selectedPost.image_url}`}
+                alt="Post"
+                style={{ width: "100%", borderRadius: "6px" }}
+              />
+              {selectedPost.description && (
+                <p style={{ marginTop: "8px" }}>{selectedPost.description}</p>
+              )}
+            </div>
+          </Popup>
         )}
       </Map>
 
