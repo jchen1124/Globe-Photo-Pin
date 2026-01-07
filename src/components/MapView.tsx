@@ -4,6 +4,7 @@ import Form from "./Form";
 import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
+import {getAddressFromCoords} from "../utils/geocoding"; 
 
 type MapViewState = {
   longitude: number;
@@ -41,15 +42,34 @@ const MapView = () => {
   // Selected Post State
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
+  // Popup Address State
+  const [popupAddress, setPopupAddress] = useState<string | null>(null);
+
   // Fetch posts from backend
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch("http://localhost:3001/posts");
       const data = await response.json();
+      // console.log("Fetched posts:", data);
       setPosts(data);
+      // console.log("Posts state set:", posts);
     };
     fetchPosts();
   }, []);
+
+  // Fetch address for selected post
+  useEffect(() => {
+    if(selectedPost){
+      async function fetchPopupAddress(){
+        const addr = await getAddressFromCoords(selectedPost!.latitude, selectedPost!.longitude);   
+        setPopupAddress(addr);
+        console.log("Fetched popup address:", addr);
+      }
+      fetchPopupAddress();
+    } else {
+      setPopupAddress(null);
+    }
+  }, [selectedPost]);
 
   // Function to get and use the user's current location
   const useCurrentLocation = () => {
@@ -166,6 +186,11 @@ const MapView = () => {
                 alt="Post"
                 style={{ width: "100%", borderRadius: "6px" }}
               />
+              {/* show address  */}
+              <p style={{ marginTop: "8px", fontSize: "14px" }}>
+                📍 {popupAddress}
+              </p>
+              
               {selectedPost.description && (
                 <p style={{ marginTop: "8px" }}>{selectedPost.description}</p>
               )}
