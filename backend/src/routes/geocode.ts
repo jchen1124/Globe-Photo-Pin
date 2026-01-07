@@ -4,7 +4,6 @@ import {Router} from 'express';
 const router = Router();
 
 router.get("/", async (req, res) => {
-    console.log("Geocode endpoint called");
     const { latitude, longitude } = req.query;
 
     if (!latitude || !longitude) {
