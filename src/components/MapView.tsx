@@ -45,6 +45,8 @@ const MapView = () => {
   // Popup Address State
   const [popupAddress, setPopupAddress] = useState<string | null>(null);
 
+  const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
+
   // Fetch posts from backend
   useEffect(() => {
     const fetchPosts = async () => {
@@ -73,6 +75,8 @@ const MapView = () => {
       setPopupAddress(null);
     }
   }, [selectedPost]);
+
+  
 
   // Function to get and use the user's current location
   const useCurrentLocation = () => {
@@ -189,16 +193,12 @@ const MapView = () => {
                 style={{ width: "100%", borderRadius: "6px" }}
               />
               <button
-                className="view-image"
-                onClick={() =>
-                  window.open(
-                    `http://localhost:3001/uploads/${selectedPost.image_url}`,
-                    "_blank"
-                  )
-                }
+                className="view-image-button"
+                onClick={() => setIsImageModalOpen(true)}
               >
                 View Image
               </button>
+
               {/* show address  */}
               <p className="popup-address">📍 {popupAddress}</p>
 
@@ -219,6 +219,17 @@ const MapView = () => {
           </Popup>
         )}
       </Map>
+
+      {/* Image Modal */}
+      {isImageModalOpen && selectedPost && (
+        <div className="image-modal" onClick={() => setIsImageModalOpen(false)}>
+          <img
+            src={`http://localhost:3001/uploads/${selectedPost.image_url}`}
+            alt="Full size"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Show form overlay */}
       {selectedLocation && (
