@@ -5,7 +5,7 @@
   z-index: 1;
 
   padding: 8px 12px;
-  background: var(--light-blue);;
+  background: var(--light-blue);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -13,11 +13,17 @@
   font-size: 14px;
   font-weight: 500;
 }
+.zoom-selected-post {
+  border: none;
+}
 
 .use-location-btn:hover {
   background: rgb(138, 216, 237);
 }
 
+.zoom-selected-post:hover {
+  background: rgb(138, 216, 237);
+}
 
 .form-overlay {
   position: absolute;
@@ -62,4 +68,61 @@
   font-weight: 500;
 }
 
+.use-location-btn,
+.zoom-selected-post {
+  font-family: var(--caveat-font);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+}
 
+.popup-address {
+  font-family: var(--caveat-font);
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.popup-description {
+  font-family: var(--caveat-font);
+  margin-top: 8px;
+  font-size: 18px;
+}
+
+/* Selected Post Popup */
+.selected-post {
+  background-color: var(--light-slate);
+  padding: 12px;
+  border-radius: 8px;
+  max-width: 280px;
+}
+
+/* Target the Mapbox popup background */
+.mapboxgl-popup-content {
+  background-color: var(--light-slate) !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+}
+
+/* Remove default padding from popup tip (arrow) */
+.mapboxgl-popup-tip {
+  border-top-color: var(--light-slate) !important;
+}
+
+.popup-time {
+  font-family: var(--caveat-font);
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.view-image {
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: var(--light-blue);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--caveat-font);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+}

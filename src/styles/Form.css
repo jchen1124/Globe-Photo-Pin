@@ -1,0 +1,86 @@
+/* Form Container */
+.upload-form {
+  font-family: var(--caveat-font);
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upload-form h3 {
+  margin: 0 0 8px 0;
+}
+
+/* File Upload Button */
+.file-upload-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--light-blue);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.file-upload-btn:hover {
+  background: rgb(138, 216, 237);
+}
+
+/* Image Preview */
+.upload-form img {
+  width: 100%;
+  border-radius: 6px;
+  margin-top: 0;
+}
+
+/* Description Textarea */
+.upload-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: var(--caveat-font);
+  font-size: 20px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+/* Address and Date Paragraphs */
+.upload-form p {
+  margin: 4px 0;
+  font-size: 20px;
+}
+
+/* Form Buttons */
+.upload-form button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: var(--caveat-font);
+}
+
+/* Submit Button */
+.upload-form button:first-of-type {
+  background: var(--light-blue);
+}
+
+.upload-form button:first-of-type:hover {
+  background: rgb(138, 216, 237);
+}
+
+/* Close Button */
+.upload-form button:last-of-type {
+  background: #e74c3c;
+  color: white;
+}
+
+.upload-form button:last-of-type:hover {
+  background: #c0392b;
+}

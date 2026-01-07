@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {getAddressFromCoords} from "../utils/geocoding";
+import { getAddressFromCoords } from "../utils/geocoding";
+import "../styles/Form.css";
 
 type location = {
   longitude: number;
@@ -32,9 +33,12 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
 
   // Reverse Geo
   useEffect(() => {
-    async function fetchAddress(){
+    async function fetchAddress() {
       // console.log("Fetching address for location:", location);
-      const addr = await getAddressFromCoords(location.latitude, location.longitude);
+      const addr = await getAddressFromCoords(
+        location.latitude,
+        location.longitude
+      );
       setAddress(addr);
       console.log("Fetched address:", addr);
     }
@@ -58,12 +62,21 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
     onSubmit(formData);
   };
 
-
   return (
     <div className="upload-form">
-      <h3>Upload Image</h3>
+      <h3 className="form-title">Upload Image</h3>
 
-      <input type="file" accept="image/*" onChange={handleImageChange} />
+      {/* <input type="file" accept="image/*" onChange={handleImageChange} /> */}
+      <label htmlFor="file-upload" className="file-upload-btn">
+        Choose Image
+      </label>
+      <input
+        id="file-upload"
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        style={{ display: "none" }}
+      />
 
       {preview && (
         <img
@@ -81,7 +94,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
 
       <p>
         {/* 📍  {address || `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`} */}
-        📍  {address}
+        📍 {address}
       </p>
 
       <p>🕒 {date}</p>

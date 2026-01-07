@@ -4,7 +4,7 @@ import Form from "./Form";
 import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
-import {getAddressFromCoords} from "../utils/geocoding"; 
+import { getAddressFromCoords } from "../utils/geocoding";
 
 type MapViewState = {
   longitude: number;
@@ -59,9 +59,12 @@ const MapView = () => {
 
   // Fetch address for selected post
   useEffect(() => {
-    if(selectedPost){
-      async function fetchPopupAddress(){
-        const addr = await getAddressFromCoords(selectedPost!.latitude, selectedPost!.longitude);   
+    if (selectedPost) {
+      async function fetchPopupAddress() {
+        const addr = await getAddressFromCoords(
+          selectedPost!.latitude,
+          selectedPost!.longitude
+        );
         setPopupAddress(addr);
         console.log("Fetched popup address:", addr);
       }
@@ -81,7 +84,7 @@ const MapView = () => {
             ...prevState,
             latitude,
             longitude,
-            zoom: 10,
+            zoom: 17,
           }));
           setSelectedLocation({
             latitude,
@@ -105,7 +108,7 @@ const MapView = () => {
         zoom: 15,
       }));
     }
-  }
+  };
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -125,7 +128,6 @@ const MapView = () => {
             longitude: lng,
             latitude: lat,
           });
-
 
           console.log("Clicked location:", lng, lat);
         }}
@@ -177,7 +179,7 @@ const MapView = () => {
             closeOnClick={false}
             anchor="top"
           >
-            <div style={{ maxWidth: "200px" }}>
+            <div className="selected-post">
               <button className="zoom-selected-post" onClick={ZoomtoPost}>
                 Zoom to Location
               </button>
@@ -186,13 +188,32 @@ const MapView = () => {
                 alt="Post"
                 style={{ width: "100%", borderRadius: "6px" }}
               />
+              <button
+                className="view-image"
+                onClick={() =>
+                  window.open(
+                    `http://localhost:3001/uploads/${selectedPost.image_url}`,
+                    "_blank"
+                  )
+                }
+              >
+                View Image
+              </button>
               {/* show address  */}
-              <p style={{ marginTop: "8px", fontSize: "14px" }}>
-                📍 {popupAddress}
+              <p className="popup-address">📍 {popupAddress}</p>
+
+              {/* show time and date */}
+              <p className="popup-time">
+                🕒{" "}
+                {new Date(selectedPost.created_at).toLocaleString(undefined, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
               </p>
-              
+
+              {/* show description  */}
               {selectedPost.description && (
-                <p style={{ marginTop: "8px" }}>{selectedPost.description}</p>
+                <p className="popup-description">{selectedPost.description}</p>
               )}
             </div>
           </Popup>
