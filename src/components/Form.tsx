@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {getAddressFromCoords} from "../utils/geocoding";
 
 type location = {
   longitude: number;
@@ -17,6 +18,8 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
 
+  const [address, setAddress] = useState<string | null>(null);
+
   const date = new Date().toLocaleString();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,6 +29,17 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
     setImage(file);
     setPreview(URL.createObjectURL(file));
   };
+
+  // Reverse Geo
+  useEffect(() => {
+    async function fetchAddress(){
+      // console.log("Fetching address for location:", location);
+      const addr = await getAddressFromCoords(location.latitude, location.longitude);
+      setAddress(addr);
+      console.log("Fetched address:", addr);
+    }
+    fetchAddress();
+  }, [location]);
 
   // Submit
   const handleSubmit = () => {
@@ -43,6 +57,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
 
     onSubmit(formData);
   };
+
 
   return (
     <div className="upload-form">
@@ -65,7 +80,8 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
       />
 
       <p>
-        📍 {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+        {/* 📍  {address || `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`} */}
+        📍  {address}
       </p>
 
       <p>🕒 {date}</p>

@@ -106,7 +106,6 @@ const MapView = () => {
             latitude: lat,
           });
 
-          // call show form
 
           console.log("Clicked location:", lng, lat);
         }}
@@ -160,7 +159,7 @@ const MapView = () => {
           >
             <div style={{ maxWidth: "200px" }}>
               <button className="zoom-selected-post" onClick={ZoomtoPost}>
-                Zoom to Post
+                Zoom to Location
               </button>
               <img
                 src={`http://localhost:3001/uploads/${selectedPost.image_url}`}

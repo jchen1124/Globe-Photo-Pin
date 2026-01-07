@@ -5,7 +5,7 @@
   z-index: 1;
 
   padding: 8px 12px;
-  background: rgb(76, 202, 237);
+  background: var(--light-blue);;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -47,6 +47,18 @@
   cursor: pointer;
 
   font-size: 14px;
+  font-weight: 500;
+}
+
+.zoom-selected-post {
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: var(--light-blue);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  font-size: 13px;
   font-weight: 500;
 }
 
