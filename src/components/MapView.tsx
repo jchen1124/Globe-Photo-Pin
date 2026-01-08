@@ -239,6 +239,7 @@ const MapView = () => {
             location={selectedLocation}
             onClose={() => setSelectedLocation(null)}
             onSubmit={async (formData) => {
+              // calls form and submits to backend
               try {
                 await axios.post("http://localhost:3001/posts", formData);
                 alert("Form submitted successfully!");

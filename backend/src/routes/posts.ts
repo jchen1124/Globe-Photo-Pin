@@ -9,8 +9,8 @@ const upload = multer({ dest: "uploads/" });
 
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const { description, latitude, longitude } = req.body;
-    const imageFile = req.file;
+    const { description, latitude, longitude } = req.body; // other form fields
+    const imageFile = req.file; // multer put the image file info here
 
     if (!imageFile) {
       return res.status(400).json({ error: "Image file is required" });

@@ -59,7 +59,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
     formData.append("longitude", location.longitude.toString());
     formData.append("createdAt", new Date().toISOString());
 
-    onSubmit(formData);
+    onSubmit(formData); // Calls MapView's onSubmit function
   };
 
   return (

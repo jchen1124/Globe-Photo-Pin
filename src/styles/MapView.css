@@ -69,7 +69,8 @@
 }
 
 .use-location-btn,
-.zoom-selected-post {
+.zoom-selected-post,
+.remove-marker-btn {
   font-family: var(--caveat-font);
   font-weight: 400;
   font-style: normal;
