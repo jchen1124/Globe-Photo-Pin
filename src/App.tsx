@@ -1,7 +1,10 @@
 import MapView from "./components/MapView";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./components/HomePage";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import "./styles/Global.css";
+
+const theme = createTheme();
 
 function App() {
   // return (
@@ -11,12 +14,14 @@ function App() {
   // );
 
   return(
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/map" element={<MapView />} />
-      </Routes>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/map" element={<MapView />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   )
 }
 

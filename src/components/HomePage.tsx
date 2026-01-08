@@ -60,15 +60,23 @@ const HomePage = () => {
             events: {
               onHover: {
                 enable: true,
-                mode: "grab",
+                mode: ["grab", "bubble"],
               },
             },
             modes: {
               grab: {
-                distance: 140,
+                distance: 200,
                 links: {
-                  opacity: 0.8,
+                  opacity: 1,
+                  color: "#ffffff",
+                  width: 2,
                 },
+              },
+              bubble: {
+                distance: 200,
+                size: 8,
+                duration: 0.4,
+                opacity: 1,
               },
             },
           },

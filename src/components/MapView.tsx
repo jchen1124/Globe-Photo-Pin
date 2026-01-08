@@ -5,6 +5,7 @@ import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
 import { getAddressFromCoords } from "../utils/geocoding";
+import RoomIcon from "@mui/icons-material/Room";
 
 type MapViewState = {
   longitude: number;
@@ -75,8 +76,6 @@ const MapView = () => {
       setPopupAddress(null);
     }
   }, [selectedPost]);
-
-  
 
   // Function to get and use the user's current location
   const useCurrentLocation = () => {
@@ -170,7 +169,9 @@ const MapView = () => {
               setSelectedPost(post);
             }}
           >
-            <div style={{ fontSize: "35px", cursor: "pointer" }}>🚩</div>
+            <RoomIcon
+              style={{ fontSize: 45, color: "#e74c3c", cursor: "pointer" }}
+            />
           </Marker>
         ))}
 
