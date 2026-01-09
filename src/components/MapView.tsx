@@ -6,6 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
 import { getAddressFromCoords } from "../utils/geocoding";
 import RoomIcon from "@mui/icons-material/Room";
+import { supabase } from "../lib/supabase";
 
 type MapViewState = {
   longitude: number;
@@ -51,10 +52,19 @@ const MapView = () => {
   // Fetch posts from backend
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch("http://localhost:3001/posts");
-      const data = await response.json();
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if(error){
+        console.error("Error fetching posts from Supabase:", error);
+        return;
+      }
+      if(data){
+        setPosts(data);
+      }
       // console.log("Fetched posts:", data);
-      setPosts(data);
+      
       // console.log("Posts state set:", posts);
     };
     fetchPosts();

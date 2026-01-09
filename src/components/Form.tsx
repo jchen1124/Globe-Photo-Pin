@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getAddressFromCoords } from "../utils/geocoding";
 import "../styles/Form.css";
+import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import PinDropIcon from '@mui/icons-material/PinDrop';
 
 type location = {
   longitude: number;
@@ -94,10 +96,11 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
 
       <p>
         {/* 📍  {address || `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`} */}
-        📍 {address}
+        <PinDropIcon style={{ verticalAlign: "middle",color: "#e74c3c", marginRight: 4 }} />
+        {address}
       </p>
 
-      <p>🕒 {date}</p>
+      <p><AccessAlarmsIcon style={{ verticalAlign: "middle", color: "#63605dff",marginRight: 4 }} /> {date}</p>
 
       <button onClick={handleSubmit}>Submit</button>
       <button onClick={onClose}>Close</button>
