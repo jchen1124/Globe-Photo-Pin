@@ -7,6 +7,7 @@ import "../styles/MapView.css";
 import { getAddressFromCoords } from "../utils/geocoding";
 import RoomIcon from "@mui/icons-material/Room";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../context/AuthContext";
 
 type MapViewState = {
   longitude: number;
@@ -47,15 +48,24 @@ const MapView = () => {
   // Popup Address State
   const [popupAddress, setPopupAddress] = useState<string | null>(null);
 
+  // Image Modal State
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
+
+  // myposts state
+  const [showMyPostsOnly, setShowMyPostsOnly] = useState(false);
+  const { user } = useAuth();
 
   // Reusable function to fetch posts
   const fetchPosts = async () => {
-    const { data, error } = await supabase
+    let query = supabase
       .from("posts")
       .select("*")
       .order("created_at", { ascending: false });
-
+    if (showMyPostsOnly && user) {
+      query = query.eq("user_id", user.id);
+    }
+    
+    const { data, error } = await query;
     if (error) {
       console.error("Error fetching posts from Supabase:", error);
       return;
@@ -128,6 +138,13 @@ const MapView = () => {
     <div style={{ width: "100vw", height: "100vh" }}>
       <button className="use-location-btn" onClick={useCurrentLocation}>
         Use My Location
+      </button>
+
+      <button
+        className="toggle-myposts-btn"
+        onClick={() => setShowMyPostsOnly(!showMyPostsOnly)}
+      >
+        {showMyPostsOnly ? "Show All Posts" : "Show My Posts"}
       </button>
 
       <Map
@@ -240,7 +257,7 @@ const MapView = () => {
       {isImageModalOpen && selectedPost && (
         <div className="image-modal" onClick={() => setIsImageModalOpen(false)}>
           <img
-          // get image URL from supabase storage
+            // get image URL from supabase storage
             src={
               supabase.storage
                 .from("post-images")

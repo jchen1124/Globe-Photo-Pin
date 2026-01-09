@@ -42,8 +42,8 @@
 
 .remove-marker-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 75px;
+  left: 20px;
   z-index: 1;
 
   padding: 8px 12px;
