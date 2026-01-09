@@ -1,7 +1,23 @@
-.use-location-btn {
+.use-location-btn{
   position: absolute;
   top: 20px;
   left: 20px;
+  z-index: 1;
+
+  padding: 8px 12px;
+  background: var(--light-blue);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.toggle-myposts-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   z-index: 1;
 
   padding: 8px 12px;
@@ -70,7 +86,8 @@
 
 .use-location-btn,
 .zoom-selected-post,
-.remove-marker-btn {
+.remove-marker-btn,
+.toggle-myposts-btn  {
   font-family: var(--caveat-font);
   font-weight: 400;
   font-style: normal;

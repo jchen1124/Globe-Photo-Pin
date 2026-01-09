@@ -64,7 +64,7 @@ const MapView = () => {
     if (showMyPostsOnly && user) {
       query = query.eq("user_id", user.id);
     }
-    
+
     const { data, error } = await query;
     if (error) {
       console.error("Error fetching posts from Supabase:", error);
@@ -76,10 +76,10 @@ const MapView = () => {
     }
   };
 
-  // Fetch posts on mount
+  // Fetch posts on mount and when filter changes
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [showMyPostsOnly, user]); // dependency on showMyPostsOnly and user
 
   // Fetch address for selected post
   useEffect(() => {
@@ -276,14 +276,17 @@ const MapView = () => {
             location={selectedLocation}
             onClose={() => setSelectedLocation(null)}
             onSubmit={async (formData) => {
-              // calls form and submits to backend
-              try {
-                // await axios.post("http://localhost:3001/posts", formData);
+              // Check if user is signed in
+              if (!user) {
+                alert("Please sign in to create a post");
+                return;
+              }
 
+              try {
                 // Using Supabase Storage to upload image
-                const imageFile = formData.get("image") as File; // imageFile hold the actual image file
+                const imageFile = formData.get("image") as File; // Actual image file
                 const fileExtension = imageFile.name.split(".").pop();
-                const fileName = `${Date.now()}.${fileExtension}`; // convert the file name to a unique name
+                const fileName = `${user.id}-${Date.now()}.${fileExtension}`; // Include user ID in filename
 
                 const { error: uploadError } = await supabase.storage
                   .from("post-images")
@@ -298,6 +301,7 @@ const MapView = () => {
                 const { error: insertError } = await supabase
                   .from("posts")
                   .insert({
+                    user_id: user?.id,
                     image_url: fileName,
                     description: formData.get("description") as string,
                     latitude: parseFloat(formData.get("latitude") as string),
