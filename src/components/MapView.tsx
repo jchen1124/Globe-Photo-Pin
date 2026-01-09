@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Map, { Marker, Popup } from "react-map-gl/mapbox";
 import Form from "./Form";
-import axios from "axios";
+// import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
 import { getAddressFromCoords } from "../utils/geocoding";
@@ -49,24 +49,25 @@ const MapView = () => {
 
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
 
-  // Fetch posts from backend
+  // Reusable function to fetch posts
+  const fetchPosts = async () => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching posts from Supabase:", error);
+      return;
+    }
+
+    if (data) {
+      setPosts(data);
+    }
+  };
+
+  // Fetch posts on mount
   useEffect(() => {
-    const fetchPosts = async () => {
-      const { data, error } = await supabase
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if(error){
-        console.error("Error fetching posts from Supabase:", error);
-        return;
-      }
-      if(data){
-        setPosts(data);
-      }
-      // console.log("Fetched posts:", data);
-      
-      // console.log("Posts state set:", posts);
-    };
     fetchPosts();
   }, []);
 
@@ -199,7 +200,11 @@ const MapView = () => {
                 Zoom to Location
               </button>
               <img
-                src={`http://localhost:3001/uploads/${selectedPost.image_url}`}
+                src={
+                  supabase.storage
+                    .from("post-images")
+                    .getPublicUrl(selectedPost.image_url).data.publicUrl
+                }
                 alt="Post"
                 style={{ width: "100%", borderRadius: "6px" }}
               />
@@ -235,7 +240,12 @@ const MapView = () => {
       {isImageModalOpen && selectedPost && (
         <div className="image-modal" onClick={() => setIsImageModalOpen(false)}>
           <img
-            src={`http://localhost:3001/uploads/${selectedPost.image_url}`}
+          // get image URL from supabase storage
+            src={
+              supabase.storage
+                .from("post-images")
+                .getPublicUrl(selectedPost.image_url).data.publicUrl
+            }
             alt="Full size"
             onClick={(e) => e.stopPropagation()}
           />
@@ -251,7 +261,41 @@ const MapView = () => {
             onSubmit={async (formData) => {
               // calls form and submits to backend
               try {
-                await axios.post("http://localhost:3001/posts", formData);
+                // await axios.post("http://localhost:3001/posts", formData);
+
+                // Using Supabase Storage to upload image
+                const imageFile = formData.get("image") as File; // imageFile hold the actual image file
+                const fileExtension = imageFile.name.split(".").pop();
+                const fileName = `${Date.now()}.${fileExtension}`; // convert the file name to a unique name
+
+                const { error: uploadError } = await supabase.storage
+                  .from("post-images")
+                  .upload(fileName, imageFile);
+                if (uploadError) {
+                  alert("Error uploading image to Supabase Storage");
+                  console.error("Supabase Storage upload error:", uploadError);
+                  return;
+                }
+
+                // Insert post with image URl
+                const { error: insertError } = await supabase
+                  .from("posts")
+                  .insert({
+                    image_url: fileName,
+                    description: formData.get("description") as string,
+                    latitude: parseFloat(formData.get("latitude") as string),
+                    longitude: parseFloat(formData.get("longitude") as string),
+                    created_at: new Date().toISOString(),
+                  });
+                if (insertError) {
+                  alert("Error inserting post into database");
+                  console.error("Supabase insert error:", insertError);
+                  return;
+                }
+
+                // Refresh posts to show new one
+                await fetchPosts();
+
                 alert("Form submitted successfully!");
                 setSelectedLocation(null);
               } catch (error) {

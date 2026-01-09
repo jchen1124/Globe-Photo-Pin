@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import "./styles/Global.css";
+import { AuthProvider } from "./context/AuthContext";
 
 const theme = createTheme();
 
@@ -15,12 +16,14 @@ function App() {
 
   return(
     <ThemeProvider theme={theme}>
+      <AuthProvider>
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/map" element={<MapView />} />
         </Routes>
       </Router>
+      </AuthProvider>
     </ThemeProvider>
   )
 }
