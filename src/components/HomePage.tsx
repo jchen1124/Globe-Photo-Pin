@@ -3,9 +3,19 @@ import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
 import "../styles/HomePage.css";
+import {useAuth}  from "../context/AuthContext";
 
 const HomePage = () => {
+  const { user, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const handleExploreClick = () => {
+    if (user) {
+      navigate("/map");
+    } else {
+      signInWithGoogle();
+    }
+  }
 
   const particlesInit = async (engine: Engine) => {
     await loadSlim(engine);
@@ -93,8 +103,8 @@ const HomePage = () => {
           memories
         </p>
 
-        <button className="explore-button" onClick={() => navigate("/map")}>
-          Explore Map
+        <button className="explore-button" onClick={handleExploreClick}>
+          {user ? "Explore the Map" : "Sign in with Google to Explore"}
         </button>
       </div>
     </div>
