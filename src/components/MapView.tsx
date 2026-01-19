@@ -33,7 +33,7 @@ const MapView = () => {
   const [viewState, setViewState] = useState<MapViewState>({
     longitude: 0,
     latitude: 20,
-    zoom: 2.3,
+    zoom: 2.1,
   });
 
   // Pin Marker State

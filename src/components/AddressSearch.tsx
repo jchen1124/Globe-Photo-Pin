@@ -33,6 +33,7 @@ const AddressSearch = ({
     setAutocomplete(autocompleteObj);
   };
 
+  // When user selects a place
   const onPlaceChanged = () => {
     if (autocomplete) {
       const place = autocomplete.getPlace();
@@ -44,6 +45,7 @@ const AddressSearch = ({
 
         console.log("Selected place:", { lat, lng, address });
 
+        // sends data to parent
         onSelectAddress({
           latitude: lat,
           longitude: lng,
