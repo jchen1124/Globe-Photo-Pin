@@ -170,3 +170,186 @@
   max-width: 500px;
   overflow-y: auto;
 } */
+
+
+/* search css */
+/* Search Overlay - Floating above map */
+.search-overlay {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 500px;
+  max-width: 90%;
+  animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Address Search Container */
+.address-search-container {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.address-search-container:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Search Input Wrapper */
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Search Icon */
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: #3498db;
+  font-size: 22px !important;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Search Input */
+.search-input {
+  width: 100%;
+  padding: 14px 45px 14px 50px;
+  font-size: 15px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s;
+  background: white;
+  font-family: inherit;
+  color: #2c3e50;
+}
+
+.search-input::placeholder {
+  color: #95a5a6;
+}
+
+.search-input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Clear Search Button */
+.clear-search-btn {
+  position: absolute;
+  right: 12px;
+  background: #ecf0f1;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #7f8c8d;
+}
+
+.clear-search-btn:hover {
+  background: #e74c3c;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Google Autocomplete Dropdown Styling */
+.pac-container {
+  font-family: inherit;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  margin-top: 8px;
+  border: none;
+  padding: 4px 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+}
+
+.pac-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+  transition: background-color 0.2s;
+  line-height: 1.4;
+}
+
+.pac-item:hover {
+  background-color: #e8f4f8;
+}
+
+.pac-item-query {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.pac-matched {
+  font-weight: 700;
+  color: #3498db;
+}
+
+.pac-icon {
+  margin-top: 4px;
+  margin-right: 8px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%233498db"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>');
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .search-overlay {
+    width: 95%;
+    top: 10px;
+  }
+
+  .search-input {
+    font-size: 14px;
+    padding: 12px 40px 12px 45px;
+  }
+
+  .search-icon {
+    font-size: 20px !important;
+    left: 12px;
+  }
+}
+
+/* Animation for pin drop */
+@keyframes pinDrop {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(10px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Map, { Marker, Popup } from "react-map-gl/mapbox";
+import type { MapRef } from "react-map-gl/mapbox";
 import Form from "./Form";
+import AddressSearch from "./AddressSearch";
 // import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
@@ -26,6 +28,7 @@ type Post = {
 };
 
 const MapView = () => {
+  const mapRef = useRef<MapRef>(null);
   // Map View State
   const [viewState, setViewState] = useState<MapViewState>({
     longitude: 0,
@@ -57,6 +60,7 @@ const MapView = () => {
 
   // Reusable function to fetch posts
   const fetchPosts = async () => {
+    console.time('Supabase_Fetch'); // Start timer
     let query = supabase
       .from("posts")
       .select("*")
@@ -66,6 +70,8 @@ const MapView = () => {
     }
 
     const { data, error } = await query;
+
+    console.timeEnd('Supabase_Fetch'); // End timer: "Supabase_Fetch: 245ms"
     if (error) {
       console.error("Error fetching posts from Supabase:", error);
       return;
@@ -104,12 +110,13 @@ const MapView = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setViewState((prevState) => ({
-            ...prevState,
-            latitude,
-            longitude,
-            zoom: 17,
-          }));
+          flyToLocation(latitude, longitude, 17);
+          // setViewState((prevState) => ({
+          //   ...prevState,
+          //   latitude,
+          //   longitude,
+          //   zoom: 17,
+          // }));
           setSelectedLocation({
             latitude,
             longitude,
@@ -123,19 +130,52 @@ const MapView = () => {
     }
   };
 
+  const flyToLocation = (latitude: number, longitude: number, zoom: number) => {
+    mapRef.current?.flyTo({
+      center: [longitude, latitude],
+      zoom: zoom,
+      duration: 2000, // 2 seconds animation
+      essential: true,
+    });
+  }
+
+  const handleSearchSelect = ( data : { latitude: number; longitude: number; address: string}) => {
+    console.log('Flying to selected address:', data);
+
+    // Fly to the selected location
+    flyToLocation(data.latitude, data.longitude, 15);
+
+    // Set selected location marker
+    setSelectedLocation({
+      latitude: data.latitude,
+      longitude: data.longitude,
+    });
+  }
+
   const ZoomtoPost = () => {
+    // if (selectedPost) {
+    //   setViewState((prevState) => ({
+    //     ...prevState,
+    //     latitude: selectedPost.latitude,
+    //     longitude: selectedPost.longitude,
+    //     zoom: 15,
+    //   }));
+    // }
+    
+    // New flyTo implementation
     if (selectedPost) {
-      setViewState((prevState) => ({
-        ...prevState,
-        latitude: selectedPost.latitude,
-        longitude: selectedPost.longitude,
-        zoom: 15,
-      }));
+      flyToLocation(selectedPost.latitude, selectedPost.longitude, 15);
     }
   };
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+
+      {/*  Address Search Overlay */}
+      <div className = "search-overlay">
+        <AddressSearch onSelectAddress={handleSearchSelect} className="address-search" />
+      </div>
+
       <button className="use-location-btn" onClick={useCurrentLocation}>
         Use My Location
       </button>
@@ -148,6 +188,7 @@ const MapView = () => {
       </button>
 
       <Map
+      ref={mapRef}
         {...viewState}
         onMove={(evt: { viewState: MapViewState }) =>
           setViewState(evt.viewState)
