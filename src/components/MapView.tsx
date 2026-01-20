@@ -10,6 +10,7 @@ import { getAddressFromCoords } from "../utils/geocoding";
 import RoomIcon from "@mui/icons-material/Room";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
+import { useAlert } from "./Alert";
 
 type MapViewState = {
   longitude: number;
@@ -29,6 +30,7 @@ type Post = {
 
 const MapView = () => {
   const mapRef = useRef<MapRef>(null);
+  const { showAlert } = useAlert();
   // Map View State
   const [viewState, setViewState] = useState<MapViewState>({
     longitude: 0,
@@ -123,7 +125,8 @@ const MapView = () => {
           });
         },
         (error) => {
-          alert("Unable to retrieve your location");
+          // alert("Unable to retrieve your location");
+          showAlert("Unable to retrieve your location", "error");
           console.error(error);
         }
       );
@@ -319,7 +322,8 @@ const MapView = () => {
             onSubmit={async (formData) => {
               // Check if user is signed in
               if (!user) {
-                alert("Please sign in to create a post");
+                // alert("Please sign in to create a post");
+                showAlert("Please sign in to create a post", "error");
                 return;
               }
 
@@ -333,7 +337,7 @@ const MapView = () => {
                   .from("post-images")
                   .upload(fileName, imageFile);
                 if (uploadError) {
-                  alert("Error uploading image to Supabase Storage");
+                  showAlert("Error uploading image to Supabase Storage", "error");
                   console.error("Supabase Storage upload error:", uploadError);
                   return;
                 }
@@ -350,7 +354,7 @@ const MapView = () => {
                     created_at: new Date().toISOString(),
                   });
                 if (insertError) {
-                  alert("Error inserting post into database");
+                  showAlert("Error inserting post into database", "error");
                   console.error("Supabase insert error:", insertError);
                   return;
                 }
@@ -358,7 +362,7 @@ const MapView = () => {
                 // Refresh posts to show new one
                 await fetchPosts();
 
-                alert("Form submitted successfully!");
+                showAlert("Form submitted successfully!", "success");
                 setSelectedLocation(null);
               } catch (error) {
                 console.error("Error submitting form:", error);
