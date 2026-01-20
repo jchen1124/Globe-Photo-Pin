@@ -3,6 +3,7 @@ import { getAddressFromCoords } from "../utils/geocoding";
 import "../styles/Form.css";
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import {useAlert} from "./Alert";
 
 type location = {
   longitude: number;
@@ -24,6 +25,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   const [address, setAddress] = useState<string | null>(null);
 
   const date = new Date().toLocaleString();
+  const {showAlert} = useAlert();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -50,7 +52,8 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   // Submit
   const handleSubmit = () => {
     if (!image) {
-      alert("Please upload an image");
+      showAlert("Please upload an image", "error");
+      // alert("Please upload an image");
       return;
     }
 

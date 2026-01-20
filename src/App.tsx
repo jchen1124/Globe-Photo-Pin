@@ -4,6 +4,7 @@ import HomePage from "./components/HomePage";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import "./styles/Global.css";
 import { AuthProvider } from "./context/AuthContext";
+import AlertProvider from "./components/Alert";
 
 const theme = createTheme();
 
@@ -17,12 +18,14 @@ function App() {
   return(
     <ThemeProvider theme={theme}>
       <AuthProvider>
+      <AlertProvider>
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/map" element={<MapView />} />
         </Routes>
       </Router>
+      </AlertProvider>
       </AuthProvider>
     </ThemeProvider>
   )
