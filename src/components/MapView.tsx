@@ -21,6 +21,7 @@ type MapViewState = {
 
 type Post = {
   id: number;
+  user_id: string;
   latitude: number;
   longitude: number;
   image_url: string;
@@ -62,7 +63,7 @@ const MapView = () => {
 
   // Reusable function to fetch posts
   const fetchPosts = async () => {
-    console.time('Supabase_Fetch'); // Start timer
+    // console.time('Supabase_Fetch'); // Start timer
     let query = supabase
       .from("posts")
       .select("*")
@@ -73,7 +74,7 @@ const MapView = () => {
 
     const { data, error } = await query;
 
-    console.timeEnd('Supabase_Fetch'); // End timer: "Supabase_Fetch: 245ms"
+    // console.timeEnd('Supabase_Fetch'); // End timer: "Supabase_Fetch: 245ms"
     if (error) {
       console.error("Error fetching posts from Supabase:", error);
       return;
@@ -88,6 +89,19 @@ const MapView = () => {
   useEffect(() => {
     fetchPosts();
   }, [showMyPostsOnly, user]); // dependency on showMyPostsOnly and user
+
+  const handleDelete = async (postId: number) => {
+    const { error } = await supabase.from("posts").delete().eq("id", postId);
+
+    if (error){
+      showAlert("Error deleting post", "error");
+    }
+
+    // Refresh posts after deletion
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+    setSelectedPost(null);
+    showAlert("Post deleted successfully", "success");
+  };
 
   // Fetch address for selected post
   useEffect(() => {
@@ -140,10 +154,14 @@ const MapView = () => {
       duration: 2000, // 2 seconds animation
       essential: true,
     });
-  }
+  };
 
-  const handleSearchSelect = ( data : { latitude: number; longitude: number; address: string}) => {
-    console.log('Flying to selected address:', data);
+  const handleSearchSelect = (data: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => {
+    console.log("Flying to selected address:", data);
 
     // Fly to the selected location
     flyToLocation(data.latitude, data.longitude, 15);
@@ -153,7 +171,7 @@ const MapView = () => {
       latitude: data.latitude,
       longitude: data.longitude,
     });
-  }
+  };
 
   const ZoomtoPost = () => {
     // if (selectedPost) {
@@ -164,7 +182,7 @@ const MapView = () => {
     //     zoom: 15,
     //   }));
     // }
-    
+
     // New flyTo implementation
     if (selectedPost) {
       flyToLocation(selectedPost.latitude, selectedPost.longitude, 15);
@@ -173,10 +191,12 @@ const MapView = () => {
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-
       {/*  Address Search Overlay */}
-      <div className = "search-overlay">
-        <AddressSearch onSelectAddress={handleSearchSelect} className="address-search" />
+      <div className="search-overlay">
+        <AddressSearch
+          onSelectAddress={handleSearchSelect}
+          className="address-search"
+        />
       </div>
 
       <button className="use-location-btn" onClick={useCurrentLocation}>
@@ -191,7 +211,7 @@ const MapView = () => {
       </button>
 
       <Map
-      ref={mapRef}
+        ref={mapRef}
         {...viewState}
         onMove={(evt: { viewState: MapViewState }) =>
           setViewState(evt.viewState)
@@ -292,6 +312,15 @@ const MapView = () => {
               {selectedPost.description && (
                 <p className="popup-description">{selectedPost.description}</p>
               )}
+
+              {user && selectedPost.user_id === user.id && (
+                <button
+                  className="delete-post-button"
+                  onClick={() => handleDelete(selectedPost.id)}
+                >
+                  Delete Post
+                </button>
+              )}
             </div>
           </Popup>
         )}
@@ -337,7 +366,10 @@ const MapView = () => {
                   .from("post-images")
                   .upload(fileName, imageFile);
                 if (uploadError) {
-                  showAlert("Error uploading image to Supabase Storage", "error");
+                  showAlert(
+                    "Error uploading image to Supabase Storage",
+                    "error"
+                  );
                   console.error("Supabase Storage upload error:", uploadError);
                   return;
                 }
