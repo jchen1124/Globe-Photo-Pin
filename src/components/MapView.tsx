@@ -362,9 +362,10 @@ const MapView = () => {
                 const fileExtension = imageFile.name.split(".").pop();
                 const fileName = `${user.id}-${Date.now()}.${fileExtension}`; // Include user ID in filename
 
+                // Upload image to Supabase Storage
                 const { error: uploadError } = await supabase.storage
-                  .from("post-images")
-                  .upload(fileName, imageFile);
+                  .from("post-images") 
+                  .upload(fileName, imageFile); // filename is where to save it and imageFile is the actual file
                 if (uploadError) {
                   showAlert(
                     "Error uploading image to Supabase Storage",
