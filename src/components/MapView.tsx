@@ -350,59 +350,39 @@ const MapView = () => {
             location={selectedLocation}
             onClose={() => setSelectedLocation(null)}
             onSubmit={async (formData) => {
-              // Check if user is signed in
+
+              // // Check if user is signed in
               if (!user) {
                 // alert("Please sign in to create a post");
                 showAlert("Please sign in to create a post", "error");
                 return;
               }
 
-              try {
-                // Using Supabase Storage to upload image
+              try{
                 const imageFile = formData.get("image") as File; // Actual image file
-                const fileExtension = imageFile.name.split(".").pop();
-                const fileName = `${user.id}-${Date.now()}.${fileExtension}`; // Include user ID in filename
+                const data = new FormData();
+                data.append("image", imageFile);
+                data.append("user_id", user.id);
+                data.append("description", formData.get("description") as string);
+                data.append("latitude", formData.get("latitude") as string);
+                data.append("longitude", formData.get("longitude") as string);
 
-                // Upload image to Supabase Storage
-                // 2
-                const { error: uploadError } = await supabase.storage
-                  .from("post-images")
-                  .upload(fileName, imageFile); // filename is where to save it and imageFile is the actual file
-                if (uploadError) {
-                  showAlert(
-                    "Error uploading image to Supabase Storage",
-                    "error",
-                  );
-                  console.error("Supabase Storage upload error:", uploadError);
-                  return;
+                const response = await fetch("http://localhost:3001/api/posts/", {
+                  method: "POST",
+                  body: data,
+                });
+                
+                if (!response.ok) {
+                  throw new Error("Failed to create post");
                 }
-
-                // Insert post with image URl
-                //3
-                const { error: insertError } = await supabase
-                  .from("posts")
-                  .insert({
-                    user_id: user?.id,
-                    image_url: fileName,
-                    description: formData.get("description") as string,
-                    latitude: parseFloat(formData.get("latitude") as string),
-                    longitude: parseFloat(formData.get("longitude") as string),
-                    created_at: new Date().toISOString(),
-                  });
-                if (insertError) {
-                  showAlert("Error inserting post into database", "error");
-                  console.error("Supabase insert error:", insertError);
-                  return;
-                }
-
-                // Refresh posts to show new one
                 await fetchPosts();
-
+                
                 showAlert("Form submitted successfully!", "success");
                 setSelectedLocation(null);
               } catch (error) {
                 console.error("Error submitting form:", error);
               }
+
             }}
           />
         </div>
