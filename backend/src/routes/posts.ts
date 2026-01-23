@@ -5,39 +5,22 @@ import {supabase} from '../db';
 
 const router = Router();
 
-// // Temp storage
-// const upload = multer({ dest: "uploads/" });
+router.get("/", async (req, res) => {
+  console.log("fetch posts route called");
+  const {user_id} = req.query;
 
-// router.post("/", upload.single("image"), async (req, res) => {
-//   console
-//   try {
-//     const { description, latitude, longitude } = req.body; // other form fields
-//     const imageFile = req.file; // multer put the image file info here
+  let query = supabase.from("posts").select("*").order("created_at", { ascending: false });
+  if (user_id) {
+    query = query.eq("user_id", user_id);
+  }
 
-//     if (!imageFile) {
-//       return res.status(400).json({ error: "Image file is required" });
-//     }
+  const { data, error } = await query;
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json(data);
+});
 
-//     await pool.query(
-//       `INSERT INTO posts (image_url, description, latitude, longitude) VALUES ($1, $2, $3, $4)`,
-//       [imageFile.filename, description, latitude, longitude]
-//     );
-//     res.status(201).json({ message: "Post created successfully" });
-//   } catch (error) {
-//     console.error("Error handling post request:", error);
-//   }
-// });
-
-// // Get all posts from the database
-// router.get("/", async (req, res) => {
-//     try{
-//         const result = await pool.query("SELECT * FROM posts ORDER BY created_at DESC");
-//         res.json(result.rows)
-//     }catch(error){
-//         console.error("Error fetching posts:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// })
 router.delete("/:id", async (req, res) => {
   const postId = req.params.id;
   const numericId = Number(postId);

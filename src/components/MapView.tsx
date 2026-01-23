@@ -64,24 +64,19 @@ const MapView = () => {
   // Reusable function to fetch posts
   const fetchPosts = async () => {
     // console.time('Supabase_Fetch'); // Start timer
-    let query = supabase
-      .from("posts")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (showMyPostsOnly && user) {
-      query = query.eq("user_id", user.id);
-    }
-
-    const { data, error } = await query;
-
-    // console.timeEnd('Supabase_Fetch'); // End timer: "Supabase_Fetch: 245ms"
-    if (error) {
-      console.error("Error fetching posts from Supabase:", error);
-      return;
-    }
-
-    if (data) {
+    try{
+      let url = "http://localhost:3001/api/posts/";
+      if (showMyPostsOnly && user) {
+        url += `?user_id=${user.id}`;
+      }
+      const response  = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
+      }
+      const data = await response.json();
       setPosts(data);
+    }catch(error){
+      console.error("Error fetching posts:", error);
     }
   };
 
@@ -369,6 +364,7 @@ const MapView = () => {
                 const fileName = `${user.id}-${Date.now()}.${fileExtension}`; // Include user ID in filename
 
                 // Upload image to Supabase Storage
+                // 2
                 const { error: uploadError } = await supabase.storage
                   .from("post-images")
                   .upload(fileName, imageFile); // filename is where to save it and imageFile is the actual file
@@ -382,6 +378,7 @@ const MapView = () => {
                 }
 
                 // Insert post with image URl
+                //3
                 const { error: insertError } = await supabase
                   .from("posts")
                   .insert({
