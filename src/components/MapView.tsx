@@ -91,16 +91,22 @@ const MapView = () => {
   }, [showMyPostsOnly, user]); // dependency on showMyPostsOnly and user
 
   const handleDelete = async (postId: number) => {
-    const { error } = await supabase.from("posts").delete().eq("id", postId);
-
-    if (error){
+    try {
+      const response = await fetch(`http://localhost:3001/api/posts/${postId}`, {
+        method: "DELETE",
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        showAlert("Error deleting post", "error");
+        return;
+      }
+      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+      setSelectedPost(null);
+      showAlert("Post deleted successfully", "success");
+    } catch (error) {
       showAlert("Error deleting post", "error");
+      console.error(error);
     }
-
-    // Refresh posts after deletion
-    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
-    setSelectedPost(null);
-    showAlert("Post deleted successfully", "success");
   };
 
   // Fetch address for selected post
@@ -109,7 +115,7 @@ const MapView = () => {
       async function fetchPopupAddress() {
         const addr = await getAddressFromCoords(
           selectedPost!.latitude,
-          selectedPost!.longitude
+          selectedPost!.longitude,
         );
         setPopupAddress(addr);
         console.log("Fetched popup address:", addr);
@@ -142,7 +148,7 @@ const MapView = () => {
           // alert("Unable to retrieve your location");
           showAlert("Unable to retrieve your location", "error");
           console.error(error);
-        }
+        },
       );
     }
   };
@@ -364,12 +370,12 @@ const MapView = () => {
 
                 // Upload image to Supabase Storage
                 const { error: uploadError } = await supabase.storage
-                  .from("post-images") 
+                  .from("post-images")
                   .upload(fileName, imageFile); // filename is where to save it and imageFile is the actual file
                 if (uploadError) {
                   showAlert(
                     "Error uploading image to Supabase Storage",
-                    "error"
+                    "error",
                   );
                   console.error("Supabase Storage upload error:", uploadError);
                   return;

@@ -1,8 +1,9 @@
-// import { Router } from "express";
+import { Router } from "express";
 // import multer from "multer";
 // import pool from "../db";
+import {supabase} from '../db';
 
-// const router = Router();
+const router = Router();
 
 // // Temp storage
 // const upload = multer({ dest: "uploads/" });
@@ -37,5 +38,27 @@
 //         res.status(500).json({ error: "Internal server error" });
 //     }
 // })
+router.delete("/:id", async (req, res) => {
+  const postId = req.params.id;
+  const numericId = Number(postId);
+  if (isNaN(numericId)) {
+    return res.status(400).json({ error: "Invalid post ID" });
+  }
+  // Use .select() to get deleted rows
+  const { data, error } = await supabase
+    .from("posts")
+    .delete()
+    .eq("id", numericId)
+    .select();
 
-// export default router;
+  console.log("Supabase delete result:", { data, error });
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+  if (!data || data.length === 0) {
+    return res.status(404).json({ error: "Post not found or already deleted" });
+  }
+  res.json({ success: true });
+});
+export default router;

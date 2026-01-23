@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-// import postsRoutes from "./routes/posts";
+import postsRoutes from "./routes/posts";
 import geocodeRoutes from "./routes/geocode";
 
 const app = express();
@@ -15,7 +15,7 @@ app.use(express.json());
 //     res.set("Content-Disposition", "inline");
 //   }
 // }));
-// app.use("/posts", postsRoutes);
+app.use("/api/posts", postsRoutes);
 app.use("/geocode", geocodeRoutes);
 
 export default app;
