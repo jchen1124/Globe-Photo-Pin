@@ -90,7 +90,7 @@ const MapView = () => {
       const response = await fetch(`http://localhost:3001/api/posts/${postId}`, {
         method: "DELETE",
       });
-      const result = await response.json();
+      // const result = await response.json();
       if (!response.ok) {
         showAlert("Error deleting post", "error");
         return;
@@ -282,6 +282,7 @@ const MapView = () => {
                 Zoom to Location
               </button>
               <img
+              // Fix 1
                 src={
                   supabase.storage
                     .from("post-images")
@@ -332,6 +333,7 @@ const MapView = () => {
         <div className="image-modal" onClick={() => setIsImageModalOpen(false)}>
           <img
             // get image URL from supabase storage
+            // Fix 2
             src={
               supabase.storage
                 .from("post-images")
