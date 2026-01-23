@@ -64,18 +64,18 @@ const MapView = () => {
   // Reusable function to fetch posts
   const fetchPosts = async () => {
     // console.time('Supabase_Fetch'); // Start timer
-    try{
-      let url = "http://localhost:3001/api/posts/";
+    try {
+      let url = "https://globe-photo-pin-1.onrender.com/api/posts/";
       if (showMyPostsOnly && user) {
         url += `?user_id=${user.id}`;
       }
-      const response  = await fetch(url);
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch posts");
       }
       const data = await response.json();
       setPosts(data);
-    }catch(error){
+    } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
@@ -87,10 +87,12 @@ const MapView = () => {
 
   const handleDelete = async (postId: number) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/posts/${postId}`, {
-        method: "DELETE",
-      });
-      // const result = await response.json();
+      const response = await fetch(
+        `https://globe-photo-pin-1.onrender.com/api/posts/${postId}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (!response.ok) {
         showAlert("Error deleting post", "error");
         return;
@@ -282,7 +284,7 @@ const MapView = () => {
                 Zoom to Location
               </button>
               <img
-              // Fix 1
+                // Fix 1
                 src={
                   supabase.storage
                     .from("post-images")
@@ -352,7 +354,6 @@ const MapView = () => {
             location={selectedLocation}
             onClose={() => setSelectedLocation(null)}
             onSubmit={async (formData) => {
-
               // // Check if user is signed in
               if (!user) {
                 // alert("Please sign in to create a post");
@@ -360,31 +361,36 @@ const MapView = () => {
                 return;
               }
 
-              try{
+              try {
                 const imageFile = formData.get("image") as File; // Actual image file
                 const data = new FormData();
                 data.append("image", imageFile);
                 data.append("user_id", user.id);
-                data.append("description", formData.get("description") as string);
+                data.append(
+                  "description",
+                  formData.get("description") as string,
+                );
                 data.append("latitude", formData.get("latitude") as string);
                 data.append("longitude", formData.get("longitude") as string);
 
-                const response = await fetch("http://localhost:3001/api/posts/", {
-                  method: "POST",
-                  body: data,
-                });
-                
+                const response = await fetch(
+                  "https://globe-photo-pin-1.onrender.com/api/posts/",
+                  {
+                    method: "POST",
+                    body: data,
+                  },
+                );
+
                 if (!response.ok) {
                   throw new Error("Failed to create post");
                 }
                 await fetchPosts();
-                
+
                 showAlert("Form submitted successfully!", "success");
                 setSelectedLocation(null);
               } catch (error) {
                 console.error("Error submitting form:", error);
               }
-
             }}
           />
         </div>
