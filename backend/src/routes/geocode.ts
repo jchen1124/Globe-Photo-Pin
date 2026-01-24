@@ -7,7 +7,7 @@ dotenv.config();
 const router = Router();
 
 router.get("/", async (req, res) => {
-    console.log("Geocode route called");
+    // console.log("Geocode route called");
     const { latitude, longitude } = req.query;
 
     if (!latitude || !longitude) {

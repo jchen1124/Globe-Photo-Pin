@@ -220,6 +220,7 @@ const MapView = () => {
           setViewState(evt.viewState)
         }
         onClick={(evt) => {
+          setSelectedPost(null); // Deselect post on map click
           const { lng, lat } = evt.lngLat;
 
           setSelectedLocation({
@@ -227,7 +228,7 @@ const MapView = () => {
             latitude: lat,
           });
 
-          console.log("Clicked location:", lng, lat);
+          // console.log("Clicked location:", lng, lat);
         }}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
@@ -261,6 +262,7 @@ const MapView = () => {
             anchor="bottom"
             onClick={(e) => {
               e.originalEvent.stopPropagation();
+              setSelectedLocation(null); // Deselect any selected location
               setSelectedPost(post);
             }}
           >
