@@ -88,7 +88,7 @@ const MapView = () => {
   const handleDelete = async (postId: number) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}`,
+        `https://globe-photo-pin-1.onrender.com/api/posts/${postId}`,
         {
           method: "DELETE",
         },
@@ -376,7 +376,7 @@ const MapView = () => {
                 data.append("longitude", formData.get("longitude") as string);
 
                 const response = await fetch(
-                  `${import.meta.env.VITE_BACKEND_URL}/api/posts/`,
+                  "https://globe-photo-pin-1.onrender.com/api/posts/",
                   {
                     method: "POST",
                     body: data,
