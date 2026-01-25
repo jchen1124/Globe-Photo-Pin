@@ -94,7 +94,7 @@ const HomePage = () => {
       />
 
       <div className="landing-content">
-        <h1 className="landing-title">Globe Pin 📍</h1>
+        <h1 className="landing-title">GeoGallery 📍</h1>
 
         <p className="landing-subtitle">Share Your World, One Pin at a Time</p>
 
