@@ -9,7 +9,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // for local development
-      "https://mygeogallery.com/"
+      "https://mygeogallery.com"
     ],
     credentials: true,
   })
