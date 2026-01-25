@@ -65,7 +65,7 @@ const MapView = () => {
   const fetchPosts = async () => {
     // console.time('Supabase_Fetch'); // Start timer
     try {
-      let url = `${import.meta.env.VITE_BACKEND_URL}/api/posts/`;
+      let url = "https://globe-photo-pin-1.onrender.com/api/posts/";
       if (showMyPostsOnly && user) {
         url += `?user_id=${user.id}`;
       }
@@ -88,7 +88,7 @@ const MapView = () => {
   const handleDelete = async (postId: number) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/posts/${postId}`,
+        `https://globe-photo-pin-1.onrender.com/api/posts/${postId}`,
         {
           method: "DELETE",
         },
@@ -376,7 +376,7 @@ const MapView = () => {
                 data.append("longitude", formData.get("longitude") as string);
 
                 const response = await fetch(
-                  `${import.meta.env.VITE_BACKEND_URL}/api/posts/`,
+                  "https://globe-photo-pin-1.onrender.com/api/posts/",
                   {
                     method: "POST",
                     body: data,

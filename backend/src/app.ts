@@ -5,7 +5,15 @@ import geocodeRoutes from "./routes/geocode";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // for local development
+      "https://mygeogallery.com/"
+    ],
+    credentials: true,
+  })
+); //allows different servers to communicate with each other
 app.use(express.json());
 // NO LONGER NEEDED AS WE ARE USING SUPABASE STORAGE
 // Serve uploaded images with proper headers
