@@ -1,4 +1,4 @@
-.use-location-btn{
+.use-location-btn {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -87,7 +87,7 @@
 .use-location-btn,
 .zoom-selected-post,
 .remove-marker-btn,
-.toggle-myposts-btn  {
+.toggle-myposts-btn {
   font-family: var(--caveat-font);
   font-weight: 400;
   font-style: normal;
@@ -330,7 +330,41 @@
   height: 20px;
 }
 
-/* Mobile Responsive */
+/* .menu-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+
+  padding: 8px 12px;
+  background: var(--light-blue);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 500;
+} */
+
+/* Menu Overlay */
+.menu-overlay {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
+  background: var(--light-blue);
+  border-radius: 8px;
+  
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  /* font-family: var(--caveat-font);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px; */
+  
+}
+
 @media (max-width: 768px) {
   .search-overlay {
     width: 95%;
@@ -345,6 +379,12 @@
   .search-icon {
     font-size: 20px !important;
     left: 12px;
+  }
+
+  .menu-overlay {
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
   }
 }
 

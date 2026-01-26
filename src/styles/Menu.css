@@ -1,0 +1,20 @@
+.menu-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  min-height: 48px;
+  background-color: var(--light-blue);
+}
+
+.welcome-text {
+  font-family: var(--caveat-font);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+  
+}
+
+

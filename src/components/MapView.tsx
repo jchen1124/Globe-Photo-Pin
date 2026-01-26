@@ -11,6 +11,7 @@ import RoomIcon from "@mui/icons-material/Room";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import { useAlert } from "./Alert";
+import Menu from "./Menu";
 
 type MapViewState = {
   longitude: number;
@@ -205,13 +206,17 @@ const MapView = () => {
       <button className="use-location-btn" onClick={useCurrentLocation}>
         Use My Location
       </button>
+      
+      <div className="menu-overlay">
+        <Menu />
+      </div>
 
-      <button
+      {/* <button
         className="toggle-myposts-btn"
         onClick={() => setShowMyPostsOnly(!showMyPostsOnly)}
       >
         {showMyPostsOnly ? "Show All Posts" : "Show My Posts"}
-      </button>
+      </button> */}
 
       <Map
         ref={mapRef}
