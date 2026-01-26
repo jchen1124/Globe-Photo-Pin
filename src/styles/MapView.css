@@ -13,7 +13,7 @@
   font-size: 14px;
   font-weight: 500;
 }
-
+/* 
 .toggle-myposts-btn {
   position: absolute;
   top: 20px;
@@ -28,7 +28,7 @@
 
   font-size: 14px;
   font-weight: 500;
-}
+} */
 .zoom-selected-post {
   border: none;
 }
@@ -86,8 +86,7 @@
 
 .use-location-btn,
 .zoom-selected-post,
-.remove-marker-btn,
-.toggle-myposts-btn {
+.remove-marker-btn {
   font-family: var(--caveat-font);
   font-weight: 400;
   font-style: normal;
@@ -354,7 +353,6 @@
   z-index: 1100;
   background: var(--light-blue);
   border-radius: 8px;
-  
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;

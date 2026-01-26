@@ -3,7 +3,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Menu.css";
 
-const Menu = () => {
+type MenuProps = {
+  showMyPostsOnly: boolean;
+  setShowMyPostsOnly: (value: boolean) => void;
+};
+
+const Menu = ({ showMyPostsOnly, setShowMyPostsOnly }: MenuProps) => {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -11,23 +16,23 @@ const Menu = () => {
   const firstName = fullName.split(" ")[0];
 
   return (
-    <div
-      className="menu-container"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-        padding: "10px",
-        borderRadius: "8px",
-      }}
-    >
-      <span className="welcome-text">
-        Welcome, {firstName}
-      </span>
+    <div className="menu-container">
+      <span className="welcome-text">Welcome, {firstName}</span>
       <MenuIcon
-        style={{ cursor: "pointer", fontSize: 32 }}
+        style={{ cursor: "pointer", fontSize: 25 }}
         onClick={() => setOpen(!open)}
       />
+      {open && (
+        <div className="menu-popover">
+          <button
+            className="toggle-myposts-btn"
+            onClick={() => setShowMyPostsOnly(!showMyPostsOnly)}
+          >
+            {showMyPostsOnly ? "Show All Posts" : "Show My Posts"}
+          </button>
+          
+        </div>
+      )}
     </div>
   );
 };

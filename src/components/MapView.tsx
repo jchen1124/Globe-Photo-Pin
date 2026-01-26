@@ -206,9 +206,12 @@ const MapView = () => {
       <button className="use-location-btn" onClick={useCurrentLocation}>
         Use My Location
       </button>
-      
+
       <div className="menu-overlay">
-        <Menu />
+        <Menu
+          showMyPostsOnly={showMyPostsOnly}
+          setShowMyPostsOnly={setShowMyPostsOnly}
+        />
       </div>
 
       {/* <button
