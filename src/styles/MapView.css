@@ -13,6 +13,14 @@
   font-size: 14px;
   font-weight: 500;
 }
+
+.form-title{
+  font-family: var(--calistoga);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+
 /* 
 .toggle-myposts-btn {
   position: absolute;
@@ -29,9 +37,7 @@
   font-size: 14px;
   font-weight: 500;
 } */
-.zoom-selected-post {
-  border: none;
-}
+
 
 .use-location-btn:hover {
   background: rgb(138, 216, 237);
@@ -58,7 +64,7 @@
 
 .remove-marker-btn {
   position: absolute;
-  top: 75px;
+  top: 60px;
   left: 20px;
   z-index: 1;
 
@@ -74,35 +80,34 @@
 
 .zoom-selected-post {
   margin-bottom: 8px;
-  padding: 6px 10px;
+  padding: 3px 8px;
   background: var(--light-blue);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-
-  font-size: 13px;
-  font-weight: 500;
+  /* font-size: 12px; */
+  /* font-weight: bold; */
 }
 
 .use-location-btn,
 .zoom-selected-post,
 .remove-marker-btn {
-  font-family: var(--caveat-font);
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px;
+  font-family: var(--calistoga);
+  font-weight: bold;
+  /* font-style: normal; */
+  font-size: 14px;
 }
 
 .popup-address {
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   margin-top: 8px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .popup-description {
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   margin-top: 8px;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 /* Selected Post Popup */
@@ -126,22 +131,22 @@
 }
 
 .popup-time {
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   margin-top: 8px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .view-image-button {
   margin-bottom: 8px;
-  padding: 6px 10px;
+  padding: 3px 8px;
   background: var(--light-blue);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-family: var(--caveat-font);
-  font-weight: 400;
+  font-family: var(--calistoga);
+  font-weight: bold;
   font-style: normal;
-  font-size: 16px;
+  font-size: 14px;
 }
 .image-modal {
   position: fixed;
@@ -177,10 +182,10 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   font-weight: 400;
   font-style: normal;
-  font-size: 16px;
+  font-size: 14px;
   color: white;
 }
 /* search css */
@@ -356,11 +361,10 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
-  /* font-family: var(--caveat-font);
+  /* font-family: var(--calistoga);
   font-weight: 400;
   font-style: normal;
   font-size: 20px; */
-  
 }
 
 @media (max-width: 768px) {

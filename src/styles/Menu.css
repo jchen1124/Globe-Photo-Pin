@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 0px 10px;
   background-color: #f4f4f4;
   border-radius: 8px;
   min-height: 48px;
@@ -11,11 +11,15 @@
 }
 
 .welcome-text {
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   font-weight: 400;
   font-style: normal;
-  font-size: 20px;
+  font-size: 14px;
 }
+
+/* .welcome-text span{
+
+} */
 
 .menu-popover {
   position: absolute;
@@ -38,13 +42,12 @@
   border: none;
   padding: 12px 24px;
   text-align: left;
-  font-size: 20px;
+  font-size: 14px;
   color: #222;
   cursor: pointer;
   transition: background 0.15s;
   border-radius: 0;
-  font-family: var(--caveat-font);
-
+  font-family: var(--calistoga);
 }
 
 .menu-popover .toggle-myposts-btn:hover {
@@ -52,7 +55,7 @@
 }
 
 .toggle-myposts-btn {
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   font-weight: 400;
   font-style: normal;
   font-size: 25px;

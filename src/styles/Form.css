@@ -1,6 +1,6 @@
 /* Form Container */
 .upload-form {
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   font-size: 20px;
   display: flex;
   flex-direction: column;
@@ -14,13 +14,13 @@
 /* File Upload Button */
 .file-upload-btn {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 4px 8px;
   background: var(--light-blue);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   width: fit-content;
 }
@@ -43,8 +43,8 @@
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-family: var(--caveat-font);
-  font-size: 20px;
+  font-family: var(--calistoga);
+  font-size: 14px;
   resize: vertical;
   box-sizing: border-box;
 }
@@ -52,7 +52,7 @@
 /* Address and Date Paragraphs */
 .upload-form p {
   margin: 4px 0;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 /* Form Buttons */
@@ -63,7 +63,7 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
 }
 
 /* Submit Button */

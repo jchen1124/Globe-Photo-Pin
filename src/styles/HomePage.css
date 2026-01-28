@@ -30,7 +30,7 @@
 
 /* Main title */
 .landing-title {
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   font-size: 72px;
   margin: 0 0 20px 0;
   font-weight: 400;
@@ -55,14 +55,16 @@
 .explore-button {
   padding: 16px 48px;
   font-size: 20px;
-  font-family: var(--caveat-font);
+  font-family: var(--calistoga);
   background: linear-gradient(135deg, var(--light-blue), var(--violet));
   color: white;
   border: none;
   border-radius: 50px;
   cursor: pointer;
   font-weight: 500;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   box-shadow: 0 4px 20px rgba(138, 43, 226, 0.4);
 }
 

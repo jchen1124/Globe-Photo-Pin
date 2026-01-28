@@ -1,9 +1,10 @@
-:root{
-    --caveat-font: "Caveat Brush", cursive;
-    --light-slate:#ccd6f6;
-    --white:#ffffff;
-    --light-blue:rgb(76, 202, 237);
-    --violet:#4169e1;
+:root {
+  --calistoga: "Caveat Brush", cursive;
+  --calistoga: "Calistoga", cursive;
+  --light-slate: #ccd6f6;
+  --white: #ffffff;
+  --light-blue: rgb(76, 202, 237);
+  --violet: #4169e1;
 }
 
 * {
@@ -12,7 +13,9 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
   overflow: hidden;
