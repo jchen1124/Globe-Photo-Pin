@@ -43,7 +43,7 @@ const AddressSearch = ({
         const lng = place.geometry.location.lng();
         const address = place.formatted_address || place.name || "";
 
-        console.log("Selected place:", { lat, lng, address });
+        // console.log("Selected place:", { lat, lng, address });
 
         // sends data to parent
         onSelectAddress({

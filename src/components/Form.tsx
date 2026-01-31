@@ -44,7 +44,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
         location.longitude
       );
       setAddress(addr);
-      console.log("Fetched address:", addr);
+      // console.log("Fetched address:", addr);
     }
     fetchAddress();
   }, [location]);

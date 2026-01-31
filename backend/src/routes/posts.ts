@@ -22,7 +22,6 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  console.log
   try{
     const { description, latitude, longitude, user_id } = req.body;
     const imageFile = req.file; // Access the uploaded file
@@ -108,7 +107,7 @@ router.delete("/:id", async (req, res) => {
     .eq("id", numericId)
     .select();
 
-  console.log("Supabase delete result:", { data, error });
+  // console.log("Supabase delete result:", { data, error });
 
   if (error) {
     return res.status(500).json({ error: error.message });

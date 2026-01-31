@@ -116,7 +116,7 @@ const MapView = () => {
           selectedPost!.longitude,
         );
         setPopupAddress(addr);
-        console.log("Fetched popup address:", addr);
+        // console.log("Fetched popup address:", addr);
       }
       fetchPopupAddress();
     } else {
@@ -165,7 +165,7 @@ const MapView = () => {
     longitude: number;
     address: string;
   }) => {
-    console.log("Flying to selected address:", data);
+    // console.log("Flying to selected address:", data);
 
     // Fly to the selected location
     flyToLocation(data.latitude, data.longitude, 15);

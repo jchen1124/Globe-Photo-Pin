@@ -1,5 +1,5 @@
 async function getAddressFromCoords(latitude: number, longitude: number) {
-  console.log("Fetching address for coords:", latitude, longitude);
+  // console.log("Fetching address for coords:", latitude, longitude);
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/geocode?latitude=${latitude}&longitude=${longitude}`,
   );
