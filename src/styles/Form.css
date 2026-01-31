@@ -67,20 +67,20 @@
 }
 
 /* Submit Button */
-.upload-form button:first-of-type {
+.submit-button {
   background: var(--light-blue);
 }
 
-.upload-form button:first-of-type:hover {
+.submit-button:hover {
   background: rgb(138, 216, 237);
 }
 
 /* Close Button */
-.upload-form button:last-of-type {
+.close-button {
   background: #e74c3c;
   color: white;
 }
 
-.upload-form button:last-of-type:hover {
+.close-button:hover {
   background: #c0392b;
 }

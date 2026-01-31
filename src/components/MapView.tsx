@@ -382,7 +382,7 @@ const MapView = () => {
                 );
                 data.append("latitude", formData.get("latitude") as string);
                 data.append("longitude", formData.get("longitude") as string);
-
+                data.append("photo_date", formData.get("photo_date") as string);
                 const response = await fetch(
                   `${import.meta.env.VITE_API_URL}/api/posts/`,
                   {
