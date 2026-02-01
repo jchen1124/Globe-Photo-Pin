@@ -27,7 +27,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   const [address, setAddress] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
-  const date = new Date().toLocaleString();
+  // const date = new Date().toLocaleString();
   const {showAlert} = useAlert();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
