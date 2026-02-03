@@ -396,10 +396,10 @@ const MapView = () => {
                 }
                 await fetchPosts();
 
-                showAlert("Form submitted successfully!", "success");
+                showAlert("Posted successfully!", "success");
                 setSelectedLocation(null);
               } catch (error) {
-                console.error("Error submitting form:", error);
+                console.error("Error posting:", error);
               }
             }}
           />
