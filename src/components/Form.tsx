@@ -3,6 +3,7 @@ import { getAddressFromCoords } from "../utils/geocoding";
 import "../styles/Form.css";
 // import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import {useAlert} from "./Alert";
 import DatePickerValue from "./Calendar";
 import { Dayjs } from "dayjs";
@@ -26,6 +27,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
 
   const [address, setAddress] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // const date = new Date().toLocaleString();
   const {showAlert} = useAlert();
@@ -53,21 +55,26 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   }, [location]);
 
   // Submit
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!image) {
       showAlert("Please upload an image", "error");
       // alert("Please upload an image");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("image", image);
-    formData.append("description", description || "");
-    formData.append("latitude", location.latitude.toString());
-    formData.append("longitude", location.longitude.toString());
-    formData.append("createdAt", new Date().toISOString());
-    formData.append("photo_date", selectedDate ? selectedDate.toISOString() : "");
-    onSubmit(formData); // Calls MapView's onSubmit function
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("description", description || "");
+      formData.append("latitude", location.latitude.toString());
+      formData.append("longitude", location.longitude.toString());
+      formData.append("createdAt", new Date().toISOString());
+      formData.append("photo_date", selectedDate ? selectedDate.toISOString() : "");
+      await onSubmit(formData); // Calls MapView's onSubmit function
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -109,8 +116,17 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
       {/* date photo taken */}
       {/* <p><AccessAlarmsIcon style={{ verticalAlign: "middle", color: "#63605dff",marginRight: 4 }} /> {date}</p> */}
       <DatePickerValue  onDateChange={setSelectedDate}/> {/* Capture selected date */}
-      <button className="submit-button" onClick={handleSubmit}>Post</button>
-      <button  className="close-button" onClick={onClose}>Close</button>
+      <button className="submit-button" onClick={handleSubmit} disabled={isLoading}>
+        {isLoading ? (
+          <>
+            <CircularProgress size={20} color="inherit" style={{ marginRight: 8 }} />
+            Posting...
+          </>
+        ) : (
+          "Post"
+        )}
+      </button>
+      <button  className="close-button" onClick={onClose} disabled={isLoading}>Close</button>
     </div>
   );
 };
