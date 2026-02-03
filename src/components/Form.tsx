@@ -106,6 +106,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
         {address}
       </p>
 
+      {/* date photo taken */}
       {/* <p><AccessAlarmsIcon style={{ verticalAlign: "middle", color: "#63605dff",marginRight: 4 }} /> {date}</p> */}
       <DatePickerValue  onDateChange={setSelectedDate}/> {/* Capture selected date */}
       <button className="submit-button" onClick={handleSubmit}>Submit</button>
