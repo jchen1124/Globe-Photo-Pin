@@ -1,0 +1,16 @@
+.my-date-picker .MuiInputBase-root {
+  font-family: var(--caveat-font) !important;
+  font-size: 18px !important;
+}
+
+.my-date-picker .MuiOutlinedInput-input {
+  font-family: var(--caveat-font) !important;
+}
+
+.my-date-picker .MuiPickersDay-root.Mui-selected {
+  font-family: var(--caveat-font) !important;
+}
+
+.my-date-picker * {
+  font-family: var(--caveat-font) !important;
+}

@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", upload.single("image"), async (req, res) => {
   try{
-    const { description, latitude, longitude, user_id } = req.body;
+    const { description, latitude, longitude, user_id, photo_date } = req.body;
     const imageFile = req.file; // Access the uploaded file
 
     if (!imageFile) {
@@ -55,6 +55,7 @@ router.post("/", upload.single("image"), async (req, res) => {
         latitude: parseFloat(latitude),
         longitude: parseFloat(longitude),
         created_at: new Date().toISOString(),
+        photo_date: photo_date
       });
     if (insertError) {
       return res.status(500).json({ error: "Error creating post" });

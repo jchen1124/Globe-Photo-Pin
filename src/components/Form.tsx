@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { getAddressFromCoords } from "../utils/geocoding";
 import "../styles/Form.css";
-import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+// import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import {useAlert} from "./Alert";
+import DatePickerValue from "./Calendar";
+import { Dayjs } from "dayjs";
 
 type location = {
   longitude: number;
@@ -23,8 +25,9 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   const [description, setDescription] = useState<string | null>(null);
 
   const [address, setAddress] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
 
-  const date = new Date().toLocaleString();
+  // const date = new Date().toLocaleString();
   const {showAlert} = useAlert();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +66,7 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
     formData.append("latitude", location.latitude.toString());
     formData.append("longitude", location.longitude.toString());
     formData.append("createdAt", new Date().toISOString());
-
+    formData.append("photo_date", selectedDate ? selectedDate.toISOString() : "");
     onSubmit(formData); // Calls MapView's onSubmit function
   };
 
@@ -103,10 +106,11 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
         {address}
       </p>
 
-      <p><AccessAlarmsIcon style={{ verticalAlign: "middle", color: "#63605dff",marginRight: 4 }} /> {date}</p>
-
-      <button onClick={handleSubmit}>Submit</button>
-      <button onClick={onClose}>Close</button>
+      {/* date photo taken */}
+      {/* <p><AccessAlarmsIcon style={{ verticalAlign: "middle", color: "#63605dff",marginRight: 4 }} /> {date}</p> */}
+      <DatePickerValue  onDateChange={setSelectedDate}/> {/* Capture selected date */}
+      <button className="submit-button" onClick={handleSubmit}>Submit</button>
+      <button  className="close-button" onClick={onClose}>Close</button>
     </div>
   );
 };

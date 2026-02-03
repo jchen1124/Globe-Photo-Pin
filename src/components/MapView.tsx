@@ -28,6 +28,7 @@ type Post = {
   image_url: string;
   description: string;
   created_at: string;
+  photo_date: string;
 };
 
 const MapView = () => {
@@ -313,12 +314,11 @@ const MapView = () => {
               {/* show address  */}
               <p className="popup-address">📍 {popupAddress}</p>
 
-              {/* show time and date */}
+              {/* now showing photo date */}
               <p className="popup-time">
-                🕒{" "}
-                {new Date(selectedPost.created_at).toLocaleString(undefined, {
+                📸 Photo Taken:{" "}
+                {new Date(selectedPost.photo_date).toLocaleString(undefined, {
                   dateStyle: "medium",
-                  timeStyle: "short",
                 })}
               </p>
 
@@ -382,7 +382,7 @@ const MapView = () => {
                 );
                 data.append("latitude", formData.get("latitude") as string);
                 data.append("longitude", formData.get("longitude") as string);
-
+                data.append("photo_date", formData.get("photo_date") as string);
                 const response = await fetch(
                   `${import.meta.env.VITE_API_URL}/api/posts/`,
                   {
