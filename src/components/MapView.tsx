@@ -392,7 +392,9 @@ const MapView = () => {
                 );
 
                 if (!response.ok) {
-                  throw new Error("Failed to create post");
+                  const errorData = await response.json().catch(() => ({}));
+                  console.error("Server error:", errorData);
+                  throw new Error(errorData.message || "Failed to create post");
                 }
                 await fetchPosts();
 
@@ -400,6 +402,10 @@ const MapView = () => {
                 setSelectedLocation(null);
               } catch (error) {
                 console.error("Error posting:", error);
+                showAlert(
+                  `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+                  "error",
+                );
               }
             }}
           />

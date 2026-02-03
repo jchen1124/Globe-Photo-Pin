@@ -1,15 +1,18 @@
 import { Router } from "express";
 import multer from "multer";
 // import pool from "../db";
-import {supabase} from '../db';
+import { supabase } from "../db";
 
 const router = Router();
 const upload = multer(); // For parsing multipart/form-data
 
 router.get("/", async (req, res) => {
-  const {user_id} = req.query;
+  const { user_id } = req.query;
 
-  let query = supabase.from("posts").select("*").order("created_at", { ascending: false });
+  let query = supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false });
   if (user_id) {
     query = query.eq("user_id", user_id);
   }
@@ -22,43 +25,53 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
-  try{
+  try {
     const { description, latitude, longitude, user_id, photo_date } = req.body;
-    const imageFile = req.file; // Access the uploaded file
+    const imageFile = req.file;
 
     if (!imageFile) {
       return res.status(400).json({ error: "Image file is required" });
     }
 
-    //generate a unique filename
+    if (!user_id || !latitude || !longitude) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
     const fileExtension = imageFile.originalname.split(".").pop();
     const fileName = `${user_id}-${Date.now()}.${fileExtension}`;
 
-    // Upload actual image itself to Supabase Storage
+    // Upload image FIRST
     const { error: uploadError } = await supabase.storage
       .from("post-images")
       .upload(fileName, imageFile.buffer, {
         contentType: imageFile.mimetype,
       });
 
-      if (uploadError) {
-      return res.status(500).json({ error: "Error uploading image" });
+    if (uploadError) {
+      console.error("Image upload error:", uploadError);
+      return res.status(500).json({ error: "Failed to upload image" });
     }
 
-    // Insert post into Supabase
-    const { error: insertError } = await supabase
-      .from("posts")
-      .insert({
-        user_id,
-        image_url: fileName,
-        description,
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-        created_at: new Date().toISOString(),
-        photo_date: photo_date
-      });
+    // ONLY if image succeeds, insert into database
+    const createdAt = new Date().toISOString();
+    const { error: insertError } = await supabase.from("posts").insert({
+      user_id,
+      image_url: fileName,
+      description: description || "",
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+      created_at: createdAt,
+      photo_date: photo_date || createdAt,
+    });
+
     if (insertError) {
-      return res.status(500).json({ error: "Error creating post" });
+      console.error("Database insert error:", insertError);
+      // Delete image if database fails
+      await supabase.storage
+        .from("post-images")
+        .remove([fileName])
+        .catch((err) => console.error("Cleanup error:", err));
+      return res.status(500).json({ error: "Failed to create post" });
     }
 
     return res.status(201).json({ message: "Post created successfully" });
@@ -66,7 +79,6 @@ router.post("/", upload.single("image"), async (req, res) => {
     console.error("Error creating post:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-
 });
 
 router.delete("/:id", async (req, res) => {
