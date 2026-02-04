@@ -28,6 +28,7 @@ const Menu = ({ showMyPostsOnly, setShowMyPostsOnly, onUseCurrentLocation }: Men
       {open && (
         <div className="menu-popover">
           {onUseCurrentLocation && (
+            // Show "Use My Location" button
             <button
               className="toggle-myposts-btn"
               onClick={() => {
