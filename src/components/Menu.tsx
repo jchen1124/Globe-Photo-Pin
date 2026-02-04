@@ -6,9 +6,10 @@ import "../styles/Menu.css";
 type MenuProps = {
   showMyPostsOnly: boolean;
   setShowMyPostsOnly: (value: boolean) => void;
+  onUseCurrentLocation?: () => void;
 };
 
-const Menu = ({ showMyPostsOnly, setShowMyPostsOnly }: MenuProps) => {
+const Menu = ({ showMyPostsOnly, setShowMyPostsOnly, onUseCurrentLocation }: MenuProps) => {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -24,6 +25,17 @@ const Menu = ({ showMyPostsOnly, setShowMyPostsOnly }: MenuProps) => {
       />
       {open && (
         <div className="menu-popover">
+          {onUseCurrentLocation && (
+            <button
+              className="toggle-myposts-btn"
+              onClick={() => {
+                onUseCurrentLocation();
+                setOpen(false);
+              }}
+            >
+              Use My Location
+            </button>
+          )}
           <button
             className="toggle-myposts-btn"
             onClick={() => setShowMyPostsOnly(!showMyPostsOnly)}

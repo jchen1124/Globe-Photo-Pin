@@ -14,12 +14,11 @@
   font-weight: 500;
 }
 
-.form-title{
+.form-title {
   font-family: var(--calistoga);
   font-size: 20px;
   font-weight: bold;
 }
-
 
 /* 
 .toggle-myposts-btn {
@@ -37,7 +36,6 @@
   font-size: 14px;
   font-weight: 500;
 } */
-
 
 .use-location-btn:hover {
   background: rgb(138, 216, 237);
@@ -64,7 +62,7 @@
 
 .remove-marker-btn {
   position: absolute;
-  top: 60px;
+  top: 20px;
   left: 20px;
   z-index: 1;
 
@@ -383,10 +381,31 @@
     left: 12px;
   }
 
-  .menu-overlay {
-    top: 10px;
-    right: 10px;
-    padding: 6px 10px;
+  .form-overlay {
+    width: 70%;
+    max-height: 40vh;
+    overflow-y: auto;
+    bottom: 10px;
+  }
+
+  .selected-post {
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+
+  .use-location-btn {
+    display: none;
+  }
+
+  .remove-marker-btn {
+    top: 80px;
+    left: 20px;
+  }
+  
+  .menu-overlay{
+    top: 80px;
+    right: 20px;
+    padding: 0px 0px;
   }
 }
 

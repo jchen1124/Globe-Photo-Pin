@@ -35,6 +35,7 @@ const MapView = () => {
   const mapRef = useRef<MapRef>(null);
   const { showAlert } = useAlert();
   // Map View State
+
   const [viewState, setViewState] = useState<MapViewState>({
     longitude: 0,
     latitude: 20,
@@ -61,6 +62,7 @@ const MapView = () => {
 
   // myposts state
   const [showMyPostsOnly, setShowMyPostsOnly] = useState(false);
+
   const { user } = useAuth();
 
   // Reusable function to fetch posts
@@ -81,6 +83,31 @@ const MapView = () => {
       console.error("Error fetching posts:", error);
     }
   };
+
+  // Responsive map view based on screen size
+  useEffect(() => {
+    const mobileQuery = window.matchMedia("(max-width: 768px)");
+    const isMobile = mobileQuery.matches;
+
+    // Set initial state based on media query
+    setViewState({
+      longitude: 0,
+      latitude: isMobile ? 30 : 20,
+      zoom: isMobile ? 1 : 2.1,
+    });
+
+    // Update when media query changes (screen resize)
+    const handleChange = () => {
+      setViewState((prev) => ({
+        ...prev,
+        latitude: mobileQuery.matches ? 30 : 20,
+        zoom: mobileQuery.matches ? 1.5 : 2.1,
+      }));
+    };
+
+    mobileQuery.addEventListener("change", handleChange);
+    return () => mobileQuery.removeEventListener("change", handleChange);
+  }, []);
 
   // Fetch posts on mount and when filter changes
   useEffect(() => {
@@ -204,14 +231,15 @@ const MapView = () => {
         />
       </div>
 
-      <button className="use-location-btn" onClick={useCurrentLocation}>
+      {/* <button className="use-location-btn" onClick={useCurrentLocation}>
         Use My Location
-      </button>
+      </button> */}
 
       <div className="menu-overlay">
         <Menu
           showMyPostsOnly={showMyPostsOnly}
           setShowMyPostsOnly={setShowMyPostsOnly}
+          onUseCurrentLocation={useCurrentLocation}
         />
       </div>
 
