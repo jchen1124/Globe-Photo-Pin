@@ -3,7 +3,7 @@ import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
 import "../styles/HomePage.css";
-import {useAuth}  from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 const HomePage = () => {
   const { user, signInWithGoogle } = useAuth();
@@ -15,7 +15,7 @@ const HomePage = () => {
     } else {
       signInWithGoogle();
     }
-  }
+  };
 
   const particlesInit = async (engine: Engine) => {
     await loadSlim(engine);
@@ -23,6 +23,12 @@ const HomePage = () => {
 
   return (
     <div className="landing-container">
+      {!user && (
+        <button className="continue-guest" onClick={() => navigate("/map")}>
+          Explore as Guest
+        </button>
+      )}
+      
       <Particles
         id="tsparticles"
         init={particlesInit}

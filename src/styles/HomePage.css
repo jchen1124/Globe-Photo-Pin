@@ -73,3 +73,25 @@
   box-shadow: 0 6px 30px rgba(138, 43, 226, 0.6);
   background: linear-gradient(135deg, var(--white), var(--violet));
 }
+
+
+.continue-guest {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  
+  padding: 12px 24px;
+  font-family: var(--calistoga);
+  background: var(--light-blue);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.continue-guest:hover {
+  background: rgb(138, 216, 237);
+  transform: translateY(-2px);
+}
