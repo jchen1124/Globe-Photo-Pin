@@ -25,7 +25,8 @@ const Menu = ({ showMyPostsOnly, setShowMyPostsOnly, onUseCurrentLocation }: Men
         style={{ cursor: "pointer", fontSize: 25 }}
         onClick={() => setOpen(!open)}
       />
-      {open && (
+      {/* if open and user is logged in */}
+      {open && user && (
         <div className="menu-popover">
           {onUseCurrentLocation && (
             // Show "Use My Location" button
@@ -45,9 +46,13 @@ const Menu = ({ showMyPostsOnly, setShowMyPostsOnly, onUseCurrentLocation }: Men
           >
             {showMyPostsOnly ? "Show All Posts" : "Show My Posts"}
           </button>
-          {!user && (
-            <button className="login-btn-menu" onClick={() => navigate("/")}>Login</button>
-          )}
+        </div>
+      )}
+
+      {/* if open and user is not logged in */}
+      {open && !user && (
+        <div className="menu-popover">
+          <button className="login-btn-menu" onClick={() => navigate("/")}>Login</button>
         </div>
       )}
     </div>
