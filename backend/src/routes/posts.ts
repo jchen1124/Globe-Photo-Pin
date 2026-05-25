@@ -1,12 +1,10 @@
 // Upload, Delete and Image Retrieval logic
 import { Router } from "express";
 import multer from "multer";
-// import pool from "../db";
 import { supabase } from "../db";
 
 const router = Router();
 const upload = multer(); // For parsing multipart/form-data
-const storageBucket = "post-images";
 
 import {
   PutObjectCommand,
