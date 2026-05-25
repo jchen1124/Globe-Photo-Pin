@@ -1,3 +1,4 @@
+// Upload, Dlete and Image Retrieval logic
 import { Router } from "express";
 import multer from "multer";
 // import pool from "../db";
