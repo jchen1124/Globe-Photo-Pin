@@ -427,3 +427,11 @@
     transform: translateY(0);
   }
 }
+
+.mapboxgl-popup-close-button {
+  top: 8px;
+  right: 8px;
+  font-size: 18px;
+  padding: 4px 8px;
+}
+

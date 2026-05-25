@@ -43,13 +43,11 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   // Reverse Geo
   useEffect(() => {
     async function fetchAddress() {
-      // console.log("Fetching address for location:", location);
       const addr = await getAddressFromCoords(
         location.latitude,
         location.longitude
       );
       setAddress(addr);
-      // console.log("Fetched address:", addr);
     }
     fetchAddress();
   }, [location]);
@@ -58,7 +56,6 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   const handleSubmit = async () => {
     if (!image) {
       showAlert("Please upload an image", "error");
-      // alert("Please upload an image");
       return;
     }
 
@@ -80,8 +77,6 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
   return (
     <div className="upload-form">
       <h3 className="form-title">Upload Image</h3>
-
-      {/* <input type="file" accept="image/*" onChange={handleImageChange} /> */}
       <label htmlFor="file-upload" className="file-upload-btn">
         Choose Image
       </label>
@@ -108,13 +103,11 @@ const Form = ({ location, onClose, onSubmit }: FormProps) => {
       />
 
       <p>
-        {/* 📍  {address || `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`} */}
         <PinDropIcon style={{ verticalAlign: "middle",color: "#e74c3c", marginRight: 4 }} />
         {address}
       </p>
 
       {/* date photo taken */}
-      {/* <p><AccessAlarmsIcon style={{ verticalAlign: "middle", color: "#63605dff",marginRight: 4 }} /> {date}</p> */}
       <DatePickerValue  onDateChange={setSelectedDate}/> {/* Capture selected date */}
       <button className="submit-button" onClick={handleSubmit} disabled={isLoading}>
         {isLoading ? (
