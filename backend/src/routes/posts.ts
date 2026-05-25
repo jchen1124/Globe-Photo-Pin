@@ -1,4 +1,4 @@
-// Upload, Dlete and Image Retrieval logic
+// Upload, Delete and Image Retrieval logic
 import { Router } from "express";
 import multer from "multer";
 // import pool from "../db";
@@ -8,13 +8,40 @@ const router = Router();
 const upload = multer(); // For parsing multipart/form-data
 const storageBucket = "post-images";
 
-const getImageUrl = (imagePath: string | null) => {
+import {
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { s3, bucketName } from "../s3";
+
+const getImageUrl = async (imagePath: string | null) => {
   if (!imagePath) {
     return null;
   }
 
-  return supabase.storage.from(storageBucket).getPublicUrl(imagePath).data
-    .publicUrl;
+  try {
+    await s3.send(
+      new HeadObjectCommand({
+        Bucket: bucketName,
+        Key: imagePath,
+      }),
+    );
+
+    return getSignedUrl(
+      s3,
+      new GetObjectCommand({
+        Bucket: bucketName,
+        Key: imagePath,
+      }),
+      { expiresIn: 604800 },
+    );
+  } catch {
+    return supabase.storage.from(storageBucket).getPublicUrl(imagePath).data
+      .publicUrl;
+  }
 };
 
 router.get("/", async (req, res) => {
@@ -33,10 +60,12 @@ router.get("/", async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 
-  const postsWithImageUrls = (data ?? []).map((post) => ({
-    ...post,
-    imageUrl: getImageUrl(post.image_url),
-  }));
+  const postsWithImageUrls = await Promise.all(
+    (data ?? []).map(async (post) => ({
+      ...post,
+      imageUrl: await getImageUrl(post.image_url),
+    })),
+  );
 
   res.json(postsWithImageUrls);
 });
@@ -58,14 +87,17 @@ router.post("/", upload.single("image"), async (req, res) => {
     const fileName = `${user_id}-${Date.now()}.${fileExtension}`;
 
     // Upload image FIRST
-    const { error: uploadError } = await supabase.storage
-      .from(storageBucket)
-      .upload(fileName, imageFile.buffer, {
-        contentType: imageFile.mimetype,
-      });
-
-    if (uploadError) {
-      console.error("Image upload error:", uploadError);
+    try {
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: fileName,
+          Body: imageFile.buffer,
+          ContentType: imageFile.mimetype,
+        }),
+      );
+    } catch (error) {
+      console.error("Image upload error:", error);
       return res.status(500).json({ error: "Failed to upload image" });
     }
 
@@ -84,9 +116,13 @@ router.post("/", upload.single("image"), async (req, res) => {
     if (insertError) {
       console.error("Database insert error:", insertError);
       // Delete image if database fails
-      await supabase.storage
-        .from(storageBucket)
-        .remove([fileName])
+      await s3
+        .send(
+          new DeleteObjectCommand({
+            Bucket: bucketName,
+            Key: fileName,
+          }),
+        )
         .catch((err) => console.error("Cleanup error:", err));
       return res.status(500).json({ error: "Failed to create post" });
     }
@@ -119,14 +155,17 @@ router.delete("/:id", async (req, res) => {
     return res.status(404).json({ error: "Post not found" });
   }
 
-  // 2. Remove the image from Supabase Storage
+  // 2. Remove the image from S3
   if (postData.image_url) {
-    const { error: removeError } = await supabase.storage
-      .from(storageBucket)
-      .remove([postData.image_url]);
-    if (removeError) {
-      // Log but don't block post deletion
-      console.error("Error removing image from storage:", removeError.message);
+    try {
+      await s3.send(
+        new DeleteObjectCommand({
+          Bucket: bucketName,
+          Key: postData.image_url,
+        }),
+      );
+    } catch (error) {
+      console.error("Error removing image from storage:", error);
     }
   }
 
