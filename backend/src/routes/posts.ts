@@ -22,27 +22,23 @@ const getImageUrl = async (imagePath: string | null) => {
     return null;
   }
 
-  try {
-    await s3.send(
-      new HeadObjectCommand({
-        Bucket: bucketName,
-        Key: imagePath,
-      }),
-    );
+  await s3.send(
+    new HeadObjectCommand({
+      Bucket: bucketName,
+      Key: imagePath,
+    }),
+  );
 
-    return getSignedUrl(
-      s3,
-      new GetObjectCommand({
-        Bucket: bucketName,
-        Key: imagePath,
-      }),
-      { expiresIn: 604800 },
-    );
-  } catch {
-    return supabase.storage.from(storageBucket).getPublicUrl(imagePath).data
-      .publicUrl;
-  }
+  return getSignedUrl(
+    s3,
+    new GetObjectCommand({
+      Bucket: bucketName,
+      Key: imagePath,
+    }),
+    { expiresIn: 604800 },
+  );
 };
+
 
 router.get("/", async (req, res) => {
   const { user_id } = req.query;
