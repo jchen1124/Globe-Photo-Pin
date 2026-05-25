@@ -8,7 +8,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
 import { getAddressFromCoords } from "../utils/geocoding";
 import RoomIcon from "@mui/icons-material/Room";
-import { supabase } from "../lib/supabase";
 import { useAuth } from "../context/AuthContext";
 import { useAlert } from "./Alert";
 import Menu from "./Menu";
@@ -26,6 +25,7 @@ type Post = {
   latitude: number;
   longitude: number;
   image_url: string;
+  imageUrl: string | null;
   description: string;
   created_at: string;
   photo_date: string;
@@ -323,12 +323,7 @@ const MapView = () => {
                 Zoom to Location
               </button>
               <img
-                // Fix 1
-                src={
-                  supabase.storage
-                    .from("post-images")
-                    .getPublicUrl(selectedPost.image_url).data.publicUrl
-                }
+                src={selectedPost.imageUrl ?? ""}
                 alt="Post"
                 style={{ width: "100%", borderRadius: "6px" }}
               />
@@ -372,13 +367,7 @@ const MapView = () => {
       {isImageModalOpen && selectedPost && (
         <div className="image-modal" onClick={() => setIsImageModalOpen(false)}>
           <img
-            // get image URL from supabase storage
-            // Fix 2
-            src={
-              supabase.storage
-                .from("post-images")
-                .getPublicUrl(selectedPost.image_url).data.publicUrl
-            }
+            src={selectedPost.imageUrl ?? ""}
             alt="Full size"
             onClick={(e) => e.stopPropagation()}
           />

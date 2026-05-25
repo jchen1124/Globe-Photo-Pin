@@ -5,6 +5,16 @@ import { supabase } from "../db";
 
 const router = Router();
 const upload = multer(); // For parsing multipart/form-data
+const storageBucket = "post-images";
+
+const getImageUrl = (imagePath: string | null) => {
+  if (!imagePath) {
+    return null;
+  }
+
+  return supabase.storage.from(storageBucket).getPublicUrl(imagePath).data
+    .publicUrl;
+};
 
 router.get("/", async (req, res) => {
   const { user_id } = req.query;
@@ -21,7 +31,13 @@ router.get("/", async (req, res) => {
   if (error) {
     return res.status(500).json({ error: error.message });
   }
-  res.json(data);
+
+  const postsWithImageUrls = (data ?? []).map((post) => ({
+    ...post,
+    imageUrl: getImageUrl(post.image_url),
+  }));
+
+  res.json(postsWithImageUrls);
 });
 
 router.post("/", upload.single("image"), async (req, res) => {
@@ -42,7 +58,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     // Upload image FIRST
     const { error: uploadError } = await supabase.storage
-      .from("post-images")
+      .from(storageBucket)
       .upload(fileName, imageFile.buffer, {
         contentType: imageFile.mimetype,
       });
@@ -68,7 +84,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       console.error("Database insert error:", insertError);
       // Delete image if database fails
       await supabase.storage
-        .from("post-images")
+        .from(storageBucket)
         .remove([fileName])
         .catch((err) => console.error("Cleanup error:", err));
       return res.status(500).json({ error: "Failed to create post" });
@@ -105,7 +121,7 @@ router.delete("/:id", async (req, res) => {
   // 2. Remove the image from Supabase Storage
   if (postData.image_url) {
     const { error: removeError } = await supabase.storage
-      .from("post-images")
+      .from(storageBucket)
       .remove([postData.image_url]);
     if (removeError) {
       // Log but don't block post deletion
