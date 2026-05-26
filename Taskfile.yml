@@ -1,0 +1,13 @@
+tasks:
+  backend:build:
+    cmds:
+      - docker build -t globe-pin-backend ./backend
+
+  backend:run:
+    cmds:
+      - docker run --env-file ./backend/.env -p 3001:3001 globe-pin-backend
+
+  backend:
+    deps:
+      - backend:build
+      - backend:run
