@@ -1,3 +1,5 @@
+version: "3"
+
 tasks:
   backend:build:
     cmds:
@@ -8,6 +10,23 @@ tasks:
       - docker run --env-file ./backend/.env -p 3001:3001 globe-pin-backend
 
   backend:
-    deps:
-      - backend:build
-      - backend:run
+    cmds:
+      - task: backend:build
+      - task: backend:run
+
+  frontend:dev:
+    cmds:
+      - npm run dev
+
+  frontend:prod:build:
+    cmds:
+      - docker build -t globe-pin-frontend .
+
+  frontend:prod:run:
+    cmds:
+      - docker run --name globe-pin-frontend -p 8080:80 globe-pin-frontend
+
+  frontend:prod:
+    cmds:
+      - task: frontend:prod:build
+      - task: frontend:prod:run
