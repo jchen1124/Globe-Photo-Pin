@@ -27,7 +27,7 @@ tasks:
 
   backend:run:
     cmds:
-      - docker run --env-file ./backend/.env -p 3001:3001 globe-pin-backend
+      - docker run --name globe-pin-backend --env-file ./backend/.env -p 3001:3001 globe-pin-backend
 
   backend:
     cmds:

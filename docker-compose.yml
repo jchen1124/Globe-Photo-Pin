@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: globe-pin-backend
     build:
       context: ./backend
       dockerfile: Dockerfile
