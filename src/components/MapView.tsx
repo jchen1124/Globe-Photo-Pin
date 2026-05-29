@@ -325,14 +325,13 @@ const MapView = () => {
               <img
                 src={selectedPost.imageUrl ?? ""}
                 alt="Post"
-                style={{ width: "100%", borderRadius: "6px" }}
-              />
-              <button
-                className="view-image-button"
                 onClick={() => setIsImageModalOpen(true)}
-              >
-                View Image
-              </button>
+                style={{
+                  width: "100%",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              />
 
               {/* show address  */}
               <p className="popup-address">📍 {popupAddress}</p>

@@ -117,6 +117,14 @@
   max-width: 280px;
 }
 
+.selected-post img {
+  transition: opacity 0.2s ease;
+}
+
+.selected-post img:hover {
+  opacity: 0.88;
+}
+
 /* Target the Mapbox popup background */
 .mapboxgl-popup-content {
   background-color: var(--light-slate) !important;
