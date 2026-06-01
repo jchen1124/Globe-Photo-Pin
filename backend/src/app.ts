@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import postsRoutes from "./routes/posts";
 import geocodeRoutes from "./routes/geocode";
+import bookmarksRoutes from "./routes/bookmarks";
 
 const app = express();
 const allowedOrigins = [
@@ -31,5 +32,6 @@ app.use(
 app.use(express.json());
 app.use("/api/posts", postsRoutes);
 app.use("/geocode", geocodeRoutes);
+app.use("/api/bookmarks", bookmarksRoutes);
 
 export default app;
