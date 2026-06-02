@@ -63,6 +63,12 @@ const MapView = () => {
   // myposts state
   const [showMyPostsOnly, setShowMyPostsOnly] = useState(false);
 
+  // bookmarked posts option state
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
+
+  // Show if post is bookmarked by user state
+  const [bookmarkedPostIds, setBookmarkedPostIds] = useState<Set<number>>(new Set());
+
   const { user } = useAuth();
 
   // Reusable function to fetch posts
@@ -221,6 +227,10 @@ const MapView = () => {
     }
   };
 
+  if (showBookmarkedOnly){
+    console.log("Bookmarked posts option selected - showing bookmarked posts only");
+  }
+
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       {/*  Address Search Overlay */}
@@ -231,25 +241,18 @@ const MapView = () => {
         />
       </div>
 
-      {/* <button className="use-location-btn" onClick={useCurrentLocation}>
-        Use My Location
-      </button> */}
-
       <div className="menu-overlay">
         <Menu
           showMyPostsOnly={showMyPostsOnly}
           setShowMyPostsOnly={setShowMyPostsOnly}
+          showBookmarkedOnly={showBookmarkedOnly}
+          setShowBookmarkedOnly={setShowBookmarkedOnly}
           onUseCurrentLocation={useCurrentLocation}
         />
       </div>
 
-      {/* <button
-        className="toggle-myposts-btn"
-        onClick={() => setShowMyPostsOnly(!showMyPostsOnly)}
-      >
-        {showMyPostsOnly ? "Show All Posts" : "Show My Posts"}
-      </button> */}
-
+      {/* if bookedmarked is true then we open side menu -- complete this logic */}
+     
       <Map
         ref={mapRef}
         {...viewState}

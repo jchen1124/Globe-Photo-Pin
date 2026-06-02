@@ -7,10 +7,12 @@ import "../styles/Menu.css";
 type MenuProps = {
   showMyPostsOnly: boolean;
   setShowMyPostsOnly: (value: boolean) => void;
+  showBookmarkedOnly: boolean;
+  setShowBookmarkedOnly: (value: boolean) => void;
   onUseCurrentLocation?: () => void;
 };
 
-const Menu = ({ showMyPostsOnly, setShowMyPostsOnly, onUseCurrentLocation }: MenuProps) => {
+const Menu = ({ showMyPostsOnly, setShowMyPostsOnly, showBookmarkedOnly,setShowBookmarkedOnly, onUseCurrentLocation }: MenuProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -40,11 +42,20 @@ const Menu = ({ showMyPostsOnly, setShowMyPostsOnly, onUseCurrentLocation }: Men
               Use My Location
             </button>
           )}
+          {/* "Show My Posts" button */}
           <button
             className="toggle-myposts-btn"
             onClick={() => setShowMyPostsOnly(!showMyPostsOnly)}
           >
             {showMyPostsOnly ? "Show All Posts" : "Show My Posts"}
+          </button>
+          {/* "Show Bookmarked Posts" button */}
+
+          <button
+            className="toggle-saved-btn"
+            onClick={() => setShowBookmarkedOnly(!showBookmarkedOnly)}
+          >
+            {"Saved Posts"}
           </button>
         </div>
       )}

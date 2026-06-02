@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
 router.delete("/:postId", async (req, res) => {
   const { postId } = req.params;
   const { user_id } = req.query;
-
+  
   if (!user_id) {
     return res.status(400).json({ error: "Missing user_id" });
   }
