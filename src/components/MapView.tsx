@@ -38,8 +38,8 @@ const MapView = () => {
   // Map View State
 
   const [viewState, setViewState] = useState<MapViewState>({
-    longitude: 0,
-    latitude: 20,
+    longitude: -100,
+    latitude: 45,
     zoom: 2.1,
   });
 
@@ -98,17 +98,18 @@ const MapView = () => {
 
     // Set initial state based on media query
     setViewState({
-      longitude: 0,
-      latitude: isMobile ? 30 : 20,
-      zoom: isMobile ? 1 : 2.1,
+      longitude: -100,
+      latitude: isMobile ? 42 : 45,
+      zoom: isMobile ? 2 : 2.1,
     });
 
     // Update when media query changes (screen resize)
     const handleChange = () => {
       setViewState((prev) => ({
         ...prev,
-        latitude: mobileQuery.matches ? 30 : 20,
-        zoom: mobileQuery.matches ? 1.5 : 2.1,
+        longitude: -100,
+        latitude: mobileQuery.matches ? 42 : 45,
+        zoom: mobileQuery.matches ? 2 : 2.1,
       }));
     };
 
@@ -238,8 +239,10 @@ const MapView = () => {
 
   // TODO: Fetch bookmarked post IDs/posts from /api/bookmarks once the backend flow is wired in.
   // The panel currently reads from bookmarkedPostIds so the UI can be built separately first.
-  if (showBookmarkedOnly){
-    console.log("Bookmarked posts option selected - showing bookmarked posts only");
+  if (showBookmarkedOnly) {
+    console.log(
+      "Bookmarked posts option selected - showing bookmarked posts only",
+    );
   }
 
   return (
@@ -269,7 +272,7 @@ const MapView = () => {
         onClose={() => setShowBookmarkedOnly(false)}
         onSelectPost={handleSavedPostSelect}
       />
-     
+
       <Map
         ref={mapRef}
         {...viewState}
