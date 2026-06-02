@@ -11,6 +11,7 @@ import RoomIcon from "@mui/icons-material/Room";
 import { useAuth } from "../context/AuthContext";
 import { useAlert } from "./Alert";
 import Menu from "./Menu";
+import SavedPostsPanel from "./SavedPostsPanel";
 
 type MapViewState = {
   longitude: number;
@@ -67,7 +68,7 @@ const MapView = () => {
   const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
 
   // Show if post is bookmarked by user state
-  const [bookmarkedPostIds, setBookmarkedPostIds] = useState<Set<number>>(new Set());
+  const [bookmarkedPostIds] = useState<Set<number>>(new Set());
 
   const { user } = useAuth();
 
@@ -227,6 +228,16 @@ const MapView = () => {
     }
   };
 
+  const savedPosts = posts.filter((post) => bookmarkedPostIds.has(post.id));
+
+  const handleSavedPostSelect = (post: Post) => {
+    setSelectedLocation(null);
+    setSelectedPost(post);
+    flyToLocation(post.latitude, post.longitude, 15);
+  };
+
+  // TODO: Fetch bookmarked post IDs/posts from /api/bookmarks once the backend flow is wired in.
+  // The panel currently reads from bookmarkedPostIds so the UI can be built separately first.
   if (showBookmarkedOnly){
     console.log("Bookmarked posts option selected - showing bookmarked posts only");
   }
@@ -252,6 +263,12 @@ const MapView = () => {
       </div>
 
       {/* if bookedmarked is true then we open side menu -- complete this logic */}
+      <SavedPostsPanel
+        isOpen={showBookmarkedOnly}
+        posts={savedPosts}
+        onClose={() => setShowBookmarkedOnly(false)}
+        onSelectPost={handleSavedPostSelect}
+      />
      
       <Map
         ref={mapRef}
