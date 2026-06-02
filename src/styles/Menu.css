@@ -37,7 +37,9 @@
   align-items: stretch;
 }
 
-.menu-popover .toggle-myposts-btn, .menu-popover .login-btn-menu {
+.menu-popover .toggle-myposts-btn,
+.menu-popover .login-btn-menu,
+.menu-popover .toggle-saved-btn {
   background: none;
   border: none;
   padding: 12px 24px;
@@ -50,11 +52,14 @@
   font-family: var(--calistoga);
 }
 
-.menu-popover .toggle-myposts-btn:hover, .menu-popover .login-btn-menu:hover {
+.menu-popover .toggle-myposts-btn:hover,
+.menu-popover .login-btn-menu:hover,
+.menu-popover .toggle-saved-btn:hover {
   background: #f0f4fa;
 }
 
-.toggle-myposts-btn {
+.toggle-myposts-btn,
+.toggle-saved-btn {
   font-family: var(--calistoga);
   font-weight: 400;
   font-style: normal;
