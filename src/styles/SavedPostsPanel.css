@@ -1,0 +1,132 @@
+.saved-posts-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 900;
+  width: min(340px, calc(100vw - 32px));
+  height: 100%;
+  padding: 22px 18px;
+  background: rgba(244, 244, 244, 0.96);
+  box-shadow: 12px 0 32px rgba(0, 0, 0, 0.22);
+  transform: translateX(-105%);
+  transition: transform 0.25s ease;
+  backdrop-filter: blur(12px);
+  overflow-y: auto;
+}
+
+.saved-posts-panel-open {
+  transform: translateX(0);
+}
+
+.saved-posts-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.saved-posts-eyebrow {
+  margin: 0 0 4px;
+  color: #4d6b78;
+  font-family: var(--calistoga);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.saved-posts-panel h2 {
+  margin: 0;
+  color: #17252d;
+  font-family: var(--calistoga);
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.saved-posts-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(23, 37, 45, 0.08);
+  color: #17252d;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.saved-posts-close:hover {
+  background: rgba(23, 37, 45, 0.16);
+  transform: scale(1.04);
+}
+
+.saved-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.saved-post-card {
+  aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: #d8e5eb;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(23, 37, 45, 0.12);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.saved-post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(23, 37, 45, 0.18);
+}
+
+.saved-post-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.saved-posts-empty {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  border: 1px dashed rgba(23, 37, 45, 0.22);
+  border-radius: 8px;
+  color: #4d6b78;
+  font-family: var(--calistoga);
+  text-align: center;
+}
+
+.saved-posts-empty p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .saved-posts-panel {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: min(62vh, 520px);
+    transform: translateY(105%);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.24);
+  }
+
+  .saved-posts-panel-open {
+    transform: translateY(0);
+  }
+
+  .saved-posts-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
