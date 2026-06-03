@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import type { Engine } from "tsparticles-engine";
 import "../styles/HomePage.css";
 import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo2.jpg";
 
 const HomePage = () => {
   const { user, signInWithGoogle } = useAuth();
@@ -17,103 +15,55 @@ const HomePage = () => {
     }
   };
 
-  const particlesInit = async (engine: Engine) => {
-    await loadSlim(engine);
-  };
-
   return (
-    <div className="landing-container">
-      {!user && (
-        <button className="continue-guest" onClick={() => navigate("/map")}>
-          Explore as Guest
-        </button>
-      )}
-      
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          background: {
-            color: "#0a0e27",
-          },
-          particles: {
-            color: { value: ["#ffffff", "#8a2be2", "#4169e1"] },
-            links: {
-              color: "#8a2be2",
-              distance: 150,
-              enable: true,
-              opacity: 0.4,
-              width: 1,
-            },
-            move: {
-              enable: true,
-              speed: 1,
-              direction: "none",
-              random: true,
-              straight: false,
-              outModes: {
-                default: "out",
-              },
-            },
-            number: {
-              value: 100,
-              density: {
-                enable: true,
-                area: 800,
-              },
-            },
-            opacity: {
-              value: { min: 0.3, max: 0.8 },
-            },
-            shape: {
-              type: "circle",
-            },
-            size: {
-              value: { min: 1, max: 4 },
-            },
-          },
-          interactivity: {
-            events: {
-              onHover: {
-                enable: true,
-                mode: ["grab", "bubble"],
-              },
-            },
-            modes: {
-              grab: {
-                distance: 200,
-                links: {
-                  opacity: 1,
-                  color: "#ffffff",
-                  width: 2,
-                },
-              },
-              bubble: {
-                distance: 200,
-                size: 8,
-                duration: 0.4,
-                opacity: 1,
-              },
-            },
-          },
-        }}
-      />
+    <main className="landing-container">
+      <nav className="landing-nav">
+        <div className="landing-brand">
+          <img src={logo} alt="" />
+          <span>GeoGallery</span>
+        </div>
 
-      <div className="landing-content">
-        <h1 className="landing-title">GeoGallery 📍</h1>
+        {!user && (
+          <button className="continue-guest" onClick={() => navigate("/map")}>
+            Explore as Guest
+          </button>
+        )}
+      </nav>
 
-        <p className="landing-subtitle">Share Your World, One Pin at a Time</p>
+      <section className="landing-shell">
+        <div className="landing-content">
+          <p className="landing-kicker">Photo memories, mapped by place</p>
+          <h1 className="landing-title">GeoGallery</h1>
 
-        <p className="landing-description">
-          Upload photos, mark locations, and create your personal map of
-          memories
-        </p>
+          <p className="landing-subtitle">
+            Build a personal travel map from the photos and places you want to
+            remember.
+          </p>
 
-        <button className="explore-button" onClick={handleExploreClick}>
-          {user ? "Explore the Map" : "Sign in with Google to Explore"}
-        </button>
-      </div>
-    </div>
+          <p className="landing-description">
+            Upload a photo, pin it to the world, and revisit your saved moments
+            through an interactive map designed around places, not folders.
+          </p>
+
+          <div className="landing-actions">
+            <button className="explore-button" onClick={handleExploreClick}>
+              {user ? "Open Map" : "Sign in with Google"}
+            </button>
+
+            {!user && (
+              <button
+                className="guest-link"
+                onClick={() => navigate("/map")}
+                type="button"
+              >
+                Preview the map
+              </button>
+            )}
+          </div>
+        </div>
+
+      </section>
+    </main>
   );
 };
 
