@@ -74,7 +74,7 @@ const MapView = () => {
   );
 
   const isSelectedPostBookmarked =
-  selectedPost ? bookmarkedPostIds.has(selectedPost.id) : false;
+    selectedPost ? bookmarkedPostIds.has(selectedPost.id) : false;
 
   const { user } = useAuth();
 
@@ -94,6 +94,30 @@ const MapView = () => {
       setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
+    }
+  };
+
+  const fetchBookmarkedPostIds = async () => {
+    if (!user) {
+      setBookedMarkedPostIds(new Set());
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/bookmarks?user_id=${user.id}`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch bookmarked posts");
+      }
+
+      const bookmarkedPosts = await response.json();
+      setBookedMarkedPostIds(
+        new Set(bookmarkedPosts.map((post: Post) => post.id)),
+      );
+    } catch (error) {
+      console.error("Error fetching bookmarked posts:", error);
     }
   };
 
@@ -127,6 +151,10 @@ const MapView = () => {
   useEffect(() => {
     fetchPosts();
   }, [showMyPostsOnly, user]); // dependency on showMyPostsOnly and user
+
+  useEffect(() => {
+    fetchBookmarkedPostIds();
+  }, [user]);
 
   const handleDelete = async (postId: number) => {
     try {
@@ -253,48 +281,59 @@ const MapView = () => {
 
   // toggle bookmark status of selected post
   const handleToggleBookmark = async (post: Post) => {
-  if (!user) {
-    showAlert("Please sign in to bookmark posts", "error");
-    return;
-  }
-
-  const isBookmarked = bookmarkedPostIds.has(post.id);
-
-  try {
-    if (isBookmarked) {
-      await fetch(
-        `${import.meta.env.VITE_API_URL}/api/bookmarks/${post.id}?user_id=${user.id}`,
-        { method: "DELETE" }
-      );
-
-      setBookedMarkedPostIds((prev) => {
-        const next = new Set(prev);
-        next.delete(post.id);
-        return next;
-      });
-    } else {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/bookmarks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          post_id: post.id,
-        }),
-      });
-
-      setBookedMarkedPostIds((prev) => {
-        const next = new Set(prev);
-        next.add(post.id);
-        return next;
-      });
+    if (!user) {
+      showAlert("Please sign in to bookmark posts", "error");
+      return;
     }
-  } catch (error) {
-    console.error("Error updating bookmark:", error);
-    showAlert("Error updating bookmark", "error");
-  }
-};
+
+    const isBookmarked = bookmarkedPostIds.has(post.id);
+
+    try {
+      if (isBookmarked) {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/bookmarks/${post.id}?user_id=${user.id}`,
+          { method: "DELETE" },
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to remove bookmark");
+        }
+
+        setBookedMarkedPostIds((prev) => {
+          const next = new Set(prev);
+          next.delete(post.id);
+          return next;
+        });
+      } else {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/bookmarks`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: user.id,
+              post_id: post.id,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to save bookmark");
+        }
+
+        setBookedMarkedPostIds((prev) => {
+          const next = new Set(prev);
+          next.add(post.id);
+          return next;
+        });
+      }
+    } catch (error) {
+      console.error("Error updating bookmark:", error);
+      showAlert("Error updating bookmark", "error");
+    }
+  };
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
