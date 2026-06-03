@@ -3,7 +3,6 @@ import Map, { Marker, Popup } from "react-map-gl/mapbox";
 import type { MapRef } from "react-map-gl/mapbox";
 import Form from "./Form";
 import AddressSearch from "./AddressSearch";
-// import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../styles/MapView.css";
 import { getAddressFromCoords } from "../utils/geocoding";
@@ -12,6 +11,8 @@ import { useAuth } from "../context/AuthContext";
 import { useAlert } from "./Alert";
 import Menu from "./Menu";
 import SavedPostsPanel from "./SavedPostsPanel";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 type MapViewState = {
   longitude: number;
@@ -68,7 +69,12 @@ const MapView = () => {
   const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false);
 
   // Show if post is bookmarked by user state
-  const [bookmarkedPostIds] = useState<Set<number>>(new Set());
+  const [bookmarkedPostIds, setBookedMarkedPostIds] = useState<Set<number>>(
+    new Set(),
+  );
+
+  const isSelectedPostBookmarked =
+  selectedPost ? bookmarkedPostIds.has(selectedPost.id) : false;
 
   const { user } = useAuth();
 
@@ -245,6 +251,51 @@ const MapView = () => {
     );
   }
 
+  // toggle bookmark status of selected post
+  const handleToggleBookmark = async (post: Post) => {
+  if (!user) {
+    showAlert("Please sign in to bookmark posts", "error");
+    return;
+  }
+
+  const isBookmarked = bookmarkedPostIds.has(post.id);
+
+  try {
+    if (isBookmarked) {
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/api/bookmarks/${post.id}?user_id=${user.id}`,
+        { method: "DELETE" }
+      );
+
+      setBookedMarkedPostIds((prev) => {
+        const next = new Set(prev);
+        next.delete(post.id);
+        return next;
+      });
+    } else {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/bookmarks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          post_id: post.id,
+        }),
+      });
+
+      setBookedMarkedPostIds((prev) => {
+        const next = new Set(prev);
+        next.add(post.id);
+        return next;
+      });
+    }
+  } catch (error) {
+    console.error("Error updating bookmark:", error);
+    showAlert("Error updating bookmark", "error");
+  }
+};
+
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       {/*  Address Search Overlay */}
@@ -265,7 +316,7 @@ const MapView = () => {
         />
       </div>
 
-      {/* if bookedmarked is true then we open side menu -- complete this logic */}
+      {/* if bookedmarked is true then we open side menu */}
       <SavedPostsPanel
         isOpen={showBookmarkedOnly}
         posts={savedPosts}
@@ -345,6 +396,24 @@ const MapView = () => {
               <button className="zoom-selected-post" onClick={ZoomtoPost}>
                 Zoom to Location
               </button>
+
+              {/* Show bookmark icon */}
+              {user && selectedPost && (
+                <button
+                  className="bookmark-post-button"
+                  onClick={() => handleToggleBookmark(selectedPost)}
+                  aria-label={
+                    isSelectedPostBookmarked ? "Remove bookmark" : "Save post"
+                  }
+                >
+                  {isSelectedPostBookmarked ? (
+                    <BookmarkIcon />
+                  ) : (
+                    <BookmarkBorderIcon />
+                  )}
+                </button>
+              )}
+
               <img
                 src={selectedPost.imageUrl ?? ""}
                 alt="Post"
