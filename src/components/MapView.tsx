@@ -13,6 +13,8 @@ import Menu from "./Menu";
 import SavedPostsPanel from "./SavedPostsPanel";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
 
 type MapViewState = {
   longitude: number;
@@ -432,9 +434,27 @@ const MapView = () => {
             anchor="top"
           >
             <div className="selected-post">
-              <button className="zoom-selected-post" onClick={ZoomtoPost}>
-                Zoom to Location
-              </button>
+              <div className="selected-post-actions">
+                <button
+                  className="popup-icon-button"
+                  onClick={ZoomtoPost}
+                  aria-label="Zoom to location"
+                  title="Zoom to location"
+                >
+                  <ZoomInIcon fontSize="small" />
+                </button>
+
+                {user && selectedPost.user_id === user.id && (
+                  <button
+                    className="popup-icon-button popup-icon-button-danger"
+                    onClick={() => handleDelete(selectedPost.id)}
+                    aria-label="Delete post"
+                    title="Delete post"
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </button>
+                )}
+              </div>
 
               {/* Show bookmark icon */}
               {user && selectedPost && (
@@ -478,15 +498,6 @@ const MapView = () => {
               {/* show description  */}
               {selectedPost.description && (
                 <p className="popup-description">{selectedPost.description}</p>
-              )}
-
-              {user && selectedPost.user_id === user.id && (
-                <button
-                  className="delete-post-button"
-                  onClick={() => handleDelete(selectedPost.id)}
-                >
-                  Delete Post
-                </button>
               )}
             </div>
           </Popup>

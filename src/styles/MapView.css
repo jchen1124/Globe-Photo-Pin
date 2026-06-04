@@ -88,6 +88,45 @@
   /* font-weight: bold; */
 }
 
+.selected-post-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.popup-icon-button {
+  width: 27px;
+  height: 27px;
+  border: none;
+  border-radius: 10px;
+  background: var(--light-blue);
+  color: #17252d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(23, 37, 45, 0.14);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.popup-icon-button:hover {
+  background: rgb(138, 216, 237);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(23, 37, 45, 0.18);
+}
+
+.popup-icon-button-danger {
+  background: #ffe9e6;
+  color: #e74c3c;
+}
+
+.popup-icon-button-danger:hover {
+  background: #ffd5cf;
+}
+
 .use-location-btn,
 .zoom-selected-post,
 .remove-marker-btn {
@@ -446,26 +485,24 @@
 
 .bookmark-post-button {
   position: absolute;
-  top: 48px;
+  top: 52px;
   left: 20px;
   z-index: 2;
-  width: 30px;
-  height: 30px;
+  width: auto;
+  height: auto;
   border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
+  background: transparent;
   color: #e74c3c;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+  padding: 0;
   transition:
-    background 0.2s ease,
     transform 0.2s ease;
 }
 
 .bookmark-post-button:hover {
-  background: #fff;
-  transform: scale(1.06);
+  background: transparent;
+  transform: scale(1.12);
 }
