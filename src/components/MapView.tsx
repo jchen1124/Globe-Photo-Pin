@@ -15,6 +15,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ConfirmationModal from "./ConfirmationModal";
 
 type MapViewState = {
   longitude: number;
@@ -77,6 +78,9 @@ const MapView = () => {
 
   const isSelectedPostBookmarked =
     selectedPost ? bookmarkedPostIds.has(selectedPost.id) : false;
+
+  const [confirmatinOpen, setConfirmationOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<Post | null>(null);
 
   const { user } = useAuth();
 
@@ -447,7 +451,10 @@ const MapView = () => {
                 {user && selectedPost.user_id === user.id && (
                   <button
                     className="popup-icon-button popup-icon-button-danger"
-                    onClick={() => handleDelete(selectedPost.id)}
+                    onClick={() => {
+                      setPostToDelete(selectedPost);
+                      setConfirmationOpen(true);
+                    }}
                     aria-label="Delete post"
                     title="Delete post"
                   >
@@ -568,6 +575,21 @@ const MapView = () => {
             }}
           />
         </div>
+      )}
+      {confirmatinOpen && postToDelete && (
+        <ConfirmationModal
+          isOpen={confirmatinOpen}
+          onClose={() => setConfirmationOpen(false)}
+          onConfirm={async (confirmed) => {
+            if (confirmed && postToDelete) {
+              await handleDelete(postToDelete.id);
+            }
+            setConfirmationOpen(false);
+            setPostToDelete(null);
+          }}
+          title="Delete Post"
+          message="Are you sure you want to delete this post?"
+        />
       )}
     </div>
   );
