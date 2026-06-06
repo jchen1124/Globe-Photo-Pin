@@ -40,14 +40,22 @@ type Post = {
 
 const MapView = () => {
   const mapRef = useRef<MapRef>(null);
+  const pendingComposerZoomRef = useRef<number | null>(null);
   const { showAlert } = useAlert();
   // Map View State
 
-  const [viewState, setViewState] = useState<MapViewState>({
-    longitude: -100,
-    latitude: 45,
-    zoom: 2.1,
+  const [viewState, setViewState] = useState<MapViewState>(() => {
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    return {
+      longitude: -100,
+      latitude: isMobile ? 42 : 45,
+      zoom: isMobile ? 2 : 2.1,
+    };
   });
+  const [isMobileLayout, setIsMobileLayout] = useState(() =>
+    window.matchMedia("(max-width: 768px)").matches,
+  );
 
   // Pin Marker State
   const [selectedLocation, setSelectedLocation] = useState<{
@@ -132,25 +140,12 @@ const MapView = () => {
   // Responsive map view based on screen size
   useEffect(() => {
     const mobileQuery = window.matchMedia("(max-width: 768px)");
-    const isMobile = mobileQuery.matches;
 
-    // Set initial state based on media query
-    setViewState({
-      longitude: -100,
-      latitude: isMobile ? 42 : 45,
-      zoom: isMobile ? 2 : 2.1,
-    });
-
-    // Update when media query changes (screen resize)
     const handleChange = () => {
-      setViewState((prev) => ({
-        ...prev,
-        longitude: -100,
-        latitude: mobileQuery.matches ? 42 : 45,
-        zoom: mobileQuery.matches ? 2 : 2.1,
-      }));
+      setIsMobileLayout(mobileQuery.matches);
     };
 
+    handleChange();
     mobileQuery.addEventListener("change", handleChange);
     return () => mobileQuery.removeEventListener("change", handleChange);
   }, []);
@@ -163,6 +158,30 @@ const MapView = () => {
   useEffect(() => {
     fetchBookmarkedPostIds();
   }, [user]);
+
+  useEffect(() => {
+    if (!selectedLocation) {
+      pendingComposerZoomRef.current = null;
+      return;
+    }
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      const mobileVerticalOffset = Math.min(window.innerHeight * 0.23, 190);
+      const zoom = pendingComposerZoomRef.current;
+
+      mapRef.current?.easeTo({
+        center: [selectedLocation.longitude, selectedLocation.latitude],
+        ...(zoom !== null && { zoom }),
+        offset: isMobileLayout ? [0, -mobileVerticalOffset] : [230, 0],
+        duration: 700,
+        essential: true,
+      });
+
+      pendingComposerZoomRef.current = null;
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [isMobileLayout, selectedLocation]);
 
   const handleDelete = async (postId: number) => {
     try {
@@ -208,13 +227,7 @@ const MapView = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          flyToLocation(latitude, longitude, 17);
-          // setViewState((prevState) => ({
-          //   ...prevState,
-          //   latitude,
-          //   longitude,
-          //   zoom: 17,
-          // }));
+          pendingComposerZoomRef.current = 17;
           setSelectedLocation({
             latitude,
             longitude,
@@ -238,17 +251,29 @@ const MapView = () => {
     });
   };
 
+  const closePostComposer = () => {
+    const location = selectedLocation;
+    pendingComposerZoomRef.current = null;
+    setSelectedLocation(null);
+
+    if (location) {
+      window.requestAnimationFrame(() => {
+        mapRef.current?.easeTo({
+          center: [location.longitude, location.latitude],
+          offset: [0, 0],
+          duration: 500,
+          essential: true,
+        });
+      });
+    }
+  };
+
   const handleSearchSelect = (data: {
     latitude: number;
     longitude: number;
     address: string;
   }) => {
-    // console.log("Flying to selected address:", data);
-
-    // Fly to the selected location
-    flyToLocation(data.latitude, data.longitude, 15);
-
-    // Set selected location marker
+    pendingComposerZoomRef.current = 15;
     setSelectedLocation({
       latitude: data.latitude,
       longitude: data.longitude,
@@ -381,6 +406,7 @@ const MapView = () => {
           setSelectedPost(null); // Deselect post on map click
           const { lng, lat } = evt.lngLat;
 
+          pendingComposerZoomRef.current = null;
           setSelectedLocation({
             longitude: lng,
             latitude: lat,
@@ -398,17 +424,10 @@ const MapView = () => {
             longitude={selectedLocation.longitude}
             anchor="bottom"
           >
-            <div style={{ fontSize: "35px", cursor: "pointer" }}>📍</div>
+            <div className="draft-location-marker" aria-label="New post location">
+              <RoomIcon />
+            </div>
           </Marker>
-        )}
-
-        {selectedLocation && (
-          <button
-            className="remove-marker-btn"
-            onClick={() => setSelectedLocation(null)}
-          >
-            Remove Pin
-          </button>
         )}
 
         {/* Show pins from database */}
@@ -553,7 +572,7 @@ const MapView = () => {
         <div className="form-overlay">
           <Form
             location={selectedLocation}
-            onClose={() => setSelectedLocation(null)}
+            onClose={closePostComposer}
             onSubmit={async (formData) => {
               // // Check if user is signed in
               if (!user) {
@@ -590,7 +609,7 @@ const MapView = () => {
                 await fetchPosts();
 
                 showAlert("Posted successfully!", "success");
-                setSelectedLocation(null);
+                closePostComposer();
               } catch (error) {
                 console.error("Error posting:", error);
                 showAlert(
