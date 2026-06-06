@@ -531,15 +531,8 @@
   top: 20px;
   right: 20px;
   z-index: 1100;
-  background: var(--light-blue);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
-  /* font-family: var(--calistoga);
-  font-weight: 400;
-  font-style: normal;
-  font-size: 20px; */
 }
 
 @media (max-width: 768px) {
@@ -583,7 +576,6 @@
   .menu-overlay{
     top: 90px;
     right: 20px;
-    padding: 0px 0px;
   }
 }
 
