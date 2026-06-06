@@ -23,9 +23,9 @@ export default function DatePickerValue({
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="my-date-picker">
+        <span className="my-date-picker-label">Photo date</span>
         <DemoContainer components={["DatePicker"]}>
           <DatePicker
-            label="Photo Taken On"
             value={value}
             onChange={handleDateChange}
           />

@@ -1,16 +1,36 @@
+.my-date-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.my-date-picker .MuiStack-root {
+  padding-top: 0;
+}
+
 .my-date-picker .MuiInputBase-root {
-  font-family: var(--caveat-font) !important;
-  font-size: 18px !important;
+  border-radius: 10px !important;
+  background: #ffffff;
+  font-family:
+    Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif !important;
+  font-size: 14px !important;
 }
 
 .my-date-picker .MuiOutlinedInput-input {
-  font-family: var(--caveat-font) !important;
+  padding: 12px 13px !important;
+  font-family: inherit !important;
 }
 
-.my-date-picker .MuiPickersDay-root.Mui-selected {
-  font-family: var(--caveat-font) !important;
+.my-date-picker .MuiOutlinedInput-notchedOutline {
+  border-color: #d3dadc !important;
 }
 
-.my-date-picker * {
-  font-family: var(--caveat-font) !important;
+.my-date-picker .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #687b80 !important;
+  border-width: 1px !important;
+}
+
+.my-date-picker .MuiIconButton-root {
+  color: #5d6c71;
 }
