@@ -13,7 +13,9 @@ import Menu from "./Menu";
 import SavedPostsPanel from "./SavedPostsPanel";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ConfirmationModal from "./ConfirmationModal";
 
@@ -435,77 +437,101 @@ const MapView = () => {
             longitude={selectedPost.longitude}
             onClose={() => setSelectedPost(null)}
             closeOnClick={false}
-            anchor="top"
+            maxWidth="340px"
           >
             <div className="selected-post">
-              <div className="selected-post-actions">
-                <button
-                  className="popup-icon-button"
-                  onClick={ZoomtoPost}
-                  aria-label="Zoom to location"
-                  title="Zoom to location"
-                >
-                  <ZoomInIcon fontSize="small" />
-                </button>
+              <div className="selected-post-media">
+                <img
+                  src={selectedPost.imageUrl ?? ""}
+                  alt={selectedPost.description || "Pinned place"}
+                  onClick={() => setIsImageModalOpen(true)}
+                />
 
-                {user && selectedPost.user_id === user.id && (
+                <div className="selected-post-actions">
                   <button
-                    className="popup-icon-button popup-icon-button-danger"
-                    onClick={() => {
-                      setPostToDelete(selectedPost);
-                      setConfirmationOpen(true);
-                    }}
-                    aria-label="Delete post"
-                    title="Delete post"
+                    className="popup-icon-button"
+                    onClick={ZoomtoPost}
+                    aria-label="Zoom to location"
+                    title="Zoom to location"
                   >
-                    <DeleteIcon fontSize="small" />
+                    <ZoomInIcon fontSize="small" />
                   </button>
-                )}
+
+                  {user && (
+                    <button
+                      className={`popup-icon-button ${
+                        isSelectedPostBookmarked ? "popup-icon-button-active" : ""
+                      }`}
+                      onClick={() => handleToggleBookmark(selectedPost)}
+                      aria-label={
+                        isSelectedPostBookmarked
+                          ? "Remove bookmark"
+                          : "Save post"
+                      }
+                      title={
+                        isSelectedPostBookmarked
+                          ? "Remove bookmark"
+                          : "Save post"
+                      }
+                    >
+                      {isSelectedPostBookmarked ? (
+                        <BookmarkIcon fontSize="small" />
+                      ) : (
+                        <BookmarkBorderIcon fontSize="small" />
+                      )}
+                    </button>
+                  )}
+
+                  {user && selectedPost.user_id === user.id && (
+                    <button
+                      className="popup-icon-button popup-icon-button-danger"
+                      onClick={() => {
+                        setPostToDelete(selectedPost);
+                        setConfirmationOpen(true);
+                      }}
+                      aria-label="Delete post"
+                      title="Delete post"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {/* Show bookmark icon */}
-              {user && selectedPost && (
-                <button
-                  className="bookmark-post-button"
-                  onClick={() => handleToggleBookmark(selectedPost)}
-                  aria-label={
-                    isSelectedPostBookmarked ? "Remove bookmark" : "Save post"
-                  }
-                >
-                  {isSelectedPostBookmarked ? (
-                    <BookmarkIcon />
-                  ) : (
-                    <BookmarkBorderIcon />
-                  )}
-                </button>
-              )}
+              <div className="selected-post-content">
+                <p className="selected-post-eyebrow">Pinned place</p>
 
-              <img
-                src={selectedPost.imageUrl ?? ""}
-                alt="Post"
-                onClick={() => setIsImageModalOpen(true)}
-                style={{
-                  width: "100%",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-              />
+                {selectedPost.description && (
+                  <p className="popup-description">
+                    {selectedPost.description}
+                  </p>
+                )}
 
-              {/* show address  */}
-              <p className="popup-address">📍 {popupAddress}</p>
+                <div className="selected-post-meta">
+                  <div className="selected-post-meta-row">
+                    <PlaceOutlinedIcon fontSize="small" />
+                    <div>
+                      <span>Location</span>
+                      <p>{popupAddress || "Finding this address…"}</p>
+                    </div>
+                  </div>
 
-              {/* now showing photo date */}
-              <p className="popup-time">
-                📸 Photo Taken:{" "}
-                {new Date(selectedPost.photo_date).toLocaleString(undefined, {
-                  dateStyle: "medium",
-                })}
-              </p>
-
-              {/* show description  */}
-              {selectedPost.description && (
-                <p className="popup-description">{selectedPost.description}</p>
-              )}
+                  <div className="selected-post-meta-row">
+                    <CalendarTodayOutlinedIcon fontSize="small" />
+                    <div>
+                      <span>Photo date</span>
+                      <p>
+                        {new Date(selectedPost.photo_date).toLocaleString(
+                          undefined,
+                          {
+                            dateStyle: "medium",
+                          },
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </Popup>
         )}
