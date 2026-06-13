@@ -201,6 +201,69 @@
   background: #eef1f1;
 }
 
+.map-page[data-theme="dark"] .menu-container,
+.map-page[data-theme="dark"] .menu-popover {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(20, 30, 35, 0.96);
+  color: #edf3f4;
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.38),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-page[data-theme="dark"] .menu-identity-label,
+.map-page[data-theme="dark"] .menu-popover-header p,
+.map-page[data-theme="dark"] .menu-option-copy small {
+  color: #91a0a5;
+}
+
+.map-page[data-theme="dark"] .welcome-text,
+.map-page[data-theme="dark"] .menu-popover-header span,
+.map-page[data-theme="dark"] .menu-option-copy strong {
+  color: #edf3f4;
+}
+
+.map-page[data-theme="dark"] .menu-popover-header {
+  border-bottom-color: #34454c;
+}
+
+.map-page[data-theme="dark"] .menu-trigger {
+  border-color: #53636a;
+  background: #edf3f4;
+  color: #17252d;
+}
+
+.map-page[data-theme="dark"] .menu-trigger:hover {
+  background: #ffffff;
+}
+
+.map-page[data-theme="dark"] .menu-option {
+  color: #d4dee0;
+}
+
+.map-page[data-theme="dark"] .menu-option:hover,
+.map-page[data-theme="dark"] .menu-option-active,
+.map-page[data-theme="dark"] .menu-option-primary:hover {
+  background: #293a41;
+}
+
+.map-page[data-theme="dark"] .menu-option-icon {
+  border-color: #41535a;
+  background: #26363d;
+  color: #bdc9cc;
+}
+
+.map-page[data-theme="dark"] .menu-option-active .menu-option-icon {
+  border-color: #617a71;
+  background: #344b43;
+  color: #c8e0d7;
+}
+
+.map-page[data-theme="dark"] .menu-option-status {
+  background: #344b43;
+  color: #c8e0d7;
+}
+
 @keyframes menuPopoverIn {
   from {
     opacity: 0;

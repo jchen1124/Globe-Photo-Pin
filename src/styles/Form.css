@@ -259,6 +259,57 @@
   color: #17252d;
 }
 
+.map-page[data-theme="dark"] .upload-form {
+  color: #edf3f4;
+}
+
+.map-page[data-theme="dark"] .form-title,
+.map-page[data-theme="dark"] .file-upload-copy strong,
+.map-page[data-theme="dark"] .form-field > span,
+.map-page[data-theme="dark"] .my-date-picker-label {
+  color: #edf3f4;
+}
+
+.map-page[data-theme="dark"] .form-subtitle,
+.map-page[data-theme="dark"] .file-upload-copy small,
+.map-page[data-theme="dark"] .form-field > span small {
+  color: #91a0a5;
+}
+
+.map-page[data-theme="dark"] .form-icon-button,
+.map-page[data-theme="dark"] .form-field textarea,
+.map-page[data-theme="dark"] .close-button {
+  border-color: #405159;
+  background: #26363d;
+  color: #d6e0e2;
+}
+
+.map-page[data-theme="dark"] .file-upload-btn {
+  border-color: #53656c;
+  background: #223138;
+  color: #c4d0d3;
+}
+
+.map-page[data-theme="dark"] .file-upload-btn:hover,
+.map-page[data-theme="dark"] .form-icon-button:hover,
+.map-page[data-theme="dark"] .close-button:hover {
+  border-color: #71858c;
+  background: #30434a;
+  color: #ffffff;
+}
+
+.map-page[data-theme="dark"] .form-field textarea::placeholder {
+  color: #829197;
+}
+
+.map-page[data-theme="dark"] .location-summary {
+  background: #302e2c;
+}
+
+.map-page[data-theme="dark"] .location-summary p {
+  color: #d6dddf;
+}
+
 @media (max-width: 520px) {
   .upload-form {
     gap: 15px;

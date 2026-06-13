@@ -26,6 +26,8 @@ type MapViewState = {
   [key: string]: any;
 };
 
+type ThemeMode = "light" | "dark";
+
 type Post = {
   id: number;
   user_id: string;
@@ -42,6 +44,17 @@ const MapView = () => {
   const mapRef = useRef<MapRef>(null);
   const pendingComposerZoomRef = useRef<number | null>(null);
   const { showAlert } = useAlert();
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    const savedTheme = window.localStorage.getItem("globe-pin-theme");
+
+    if (savedTheme === "light" || savedTheme === "dark") {
+      return savedTheme;
+    }
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
   // Map View State
 
   const [viewState, setViewState] = useState<MapViewState>(() => {
@@ -93,6 +106,15 @@ const MapView = () => {
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
 
   const { user } = useAuth();
+
+  useEffect(() => {
+    window.localStorage.setItem("globe-pin-theme", themeMode);
+    document.documentElement.dataset.mapTheme = themeMode;
+
+    return () => {
+      delete document.documentElement.dataset.mapTheme;
+    };
+  }, [themeMode]);
 
   // Reusable function to fetch posts
   const fetchPosts = async () => {
@@ -369,7 +391,7 @@ const MapView = () => {
   };
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+    <div className="map-page" data-theme={themeMode}>
       {/*  Address Search Overlay */}
       <div className="search-overlay">
         <AddressSearch
@@ -385,6 +407,12 @@ const MapView = () => {
           showBookmarkedOnly={showBookmarkedOnly}
           setShowBookmarkedOnly={setShowBookmarkedOnly}
           onUseCurrentLocation={useCurrentLocation}
+          themeMode={themeMode}
+          onToggleTheme={() =>
+            setThemeMode((currentTheme) =>
+              currentTheme === "light" ? "dark" : "light",
+            )
+          }
         />
       </div>
 
@@ -415,7 +443,11 @@ const MapView = () => {
           // console.log("Clicked location:", lng, lat);
         }}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-        mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
+        mapStyle={
+          themeMode === "light"
+            ? "mapbox://styles/mapbox/streets-v12"
+            : "mapbox://styles/mapbox/satellite-streets-v12"
+        }
       >
         {/* Place Marker */}
         {selectedLocation && (

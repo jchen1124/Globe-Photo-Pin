@@ -111,6 +111,34 @@
   margin: 0;
 }
 
+.map-page[data-theme="dark"] .saved-posts-panel {
+  background: rgba(20, 30, 35, 0.97);
+  color: #edf3f4;
+  box-shadow: 12px 0 32px rgba(0, 0, 0, 0.42);
+}
+
+.map-page[data-theme="dark"] .saved-posts-panel h2 {
+  color: #edf3f4;
+}
+
+.map-page[data-theme="dark"] .saved-posts-eyebrow,
+.map-page[data-theme="dark"] .saved-posts-empty {
+  color: #9eb0b6;
+}
+
+.map-page[data-theme="dark"] .saved-posts-close {
+  background: rgba(255, 255, 255, 0.1);
+  color: #edf3f4;
+}
+
+.map-page[data-theme="dark"] .saved-posts-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.map-page[data-theme="dark"] .saved-posts-empty {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
 @media (max-width: 768px) {
   .saved-posts-panel {
     top: auto;

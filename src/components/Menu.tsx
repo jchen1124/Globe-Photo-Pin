@@ -5,9 +5,13 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
 import PhotoLibraryOutlinedIcon from "@mui/icons-material/PhotoLibraryOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
+
+type ThemeMode = "light" | "dark";
 
 type MenuProps = {
   showMyPostsOnly: boolean;
@@ -15,6 +19,8 @@ type MenuProps = {
   showBookmarkedOnly: boolean;
   setShowBookmarkedOnly: (value: boolean) => void;
   onUseCurrentLocation?: () => void;
+  themeMode: ThemeMode;
+  onToggleTheme: () => void;
 };
 
 const Menu = ({
@@ -23,6 +29,8 @@ const Menu = ({
   showBookmarkedOnly,
   setShowBookmarkedOnly,
   onUseCurrentLocation,
+  themeMode,
+  onToggleTheme,
 }: MenuProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -30,6 +38,31 @@ const Menu = ({
 
   const fullName = user?.user_metadata.full_name || "Guest";
   const firstName = fullName.split(" ")[0];
+  const themeOption = (
+    <button
+      type="button"
+      className={`menu-option ${themeMode === "dark" ? "menu-option-active" : ""}`}
+      onClick={onToggleTheme}
+      role="menuitem"
+    >
+      <span className="menu-option-icon">
+        {themeMode === "dark" ? (
+          <LightModeOutlinedIcon fontSize="small" />
+        ) : (
+          <DarkModeOutlinedIcon fontSize="small" />
+        )}
+      </span>
+      <span className="menu-option-copy">
+        <strong>{themeMode === "dark" ? "Light mode" : "Dark mode"}</strong>
+        <small>
+          Switch to the {themeMode === "dark" ? "light" : "dark"} map theme
+        </small>
+      </span>
+      <span className="menu-option-status">
+        {themeMode === "dark" ? "Dark" : "Light"}
+      </span>
+    </button>
+  );
 
   return (
     <div className="menu-container">
@@ -122,6 +155,8 @@ const Menu = ({
                 <span className="menu-option-status">Open</span>
               )}
             </button>
+
+            {themeOption}
           </div>
         </div>
       )}
@@ -147,6 +182,7 @@ const Menu = ({
                 <small>Continue with your account</small>
               </span>
             </button>
+            {themeOption}
           </div>
         </div>
       )}

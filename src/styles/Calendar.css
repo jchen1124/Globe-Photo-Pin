@@ -34,3 +34,24 @@
 .my-date-picker .MuiIconButton-root {
   color: #5d6c71;
 }
+
+.map-page[data-theme="dark"] .my-date-picker .MuiPickersInputBase-root {
+  background: #26363d;
+  color: #ffffff !important;
+}
+
+.map-page[data-theme="dark"]
+  .my-date-picker
+  .MuiPickersOutlinedInput-notchedOutline {
+  border-color: #405159 !important;
+}
+
+.map-page[data-theme="dark"] .my-date-picker .MuiPickersSectionList-root,
+.map-page[data-theme="dark"] .my-date-picker .MuiPickersInputBase-sectionContent {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.map-page[data-theme="dark"] .my-date-picker .MuiIconButton-root {
+  color: #ffffff !important;
+}
