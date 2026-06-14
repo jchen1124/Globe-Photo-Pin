@@ -1,164 +1,222 @@
-# Globe Pin
+# GeoGallery v2.0
 
-Globe Pin is a full-stack photo mapping app where users can drop pins anywhere in the world, upload an image, and build a personal travel-style gallery on an interactive map.
+GeoGallery is a full-stack photo mapping application where users can upload
+photos, pin them to real-world locations, and revisit their memories through an
+interactive global map.
 
-The project combines a React + Vite frontend with an Express + TypeScript backend, uses Supabase for authentication and relational data, and stores uploaded images in Amazon S3. The result is a location-based social app that touches frontend UI, backend APIs, cloud storage, authentication, and deployment.
-
+The project was originally developed as Globe Pin and combines a React
+frontend with an Express API, Supabase authentication and data storage, Amazon
+S3 image storage, and Mapbox mapping services.
 
 ## Features
 
-- Upload an image and attach it to a real-world latitude/longitude coordinate
-- Browse geotagged posts on an interactive global map
-- Reverse geocode coordinates into human-readable place names
-- Search and jump to locations on the map
-- Filter to show only the signed-in user's posts
-- View full-size post images in a modal
-- Delete your own posts
-- Sign in with Google via Supabase Auth
-- Responsive experience for desktop and mobile
+- Explore geotagged posts on an interactive global map
+- Search for locations and move directly to them
+- Upload photos with descriptions, dates, and coordinates
+- Sign in with Google through Supabase Auth
+- Filter the map to show only your posts
+- Bookmark posts and browse saved places
+- View and delete your own posts
+- Switch between colorful light and satellite dark map themes
+- Use your current location when creating a post
+- Use the app on desktop and mobile layouts
 
-## Architecture
+## Technology
 
 ### Frontend
 
 - React 19
-- Vite
 - TypeScript
-- `react-map-gl` / Mapbox GL
+- Vite
+- Mapbox GL and `react-map-gl`
 - Material UI
+- Google Places Autocomplete
 
 ### Backend
 
 - Node.js
 - Express
 - TypeScript
-- Multer for multipart image uploads
+- Multer for image uploads
+- AWS SDK for S3
 
-### Data and Cloud Services
+### Services
 
-- Supabase Auth for Google sign-in
-- Supabase Postgres for post records
-- Amazon S3 for image storage
-- AWS SDK v3 for uploads, deletes, and signed image URLs
-- Mapbox Geocoding API for address lookup
+- Supabase Auth and Postgres
+- Amazon S3
+- Mapbox
+- Google Maps Platform
+- Vercel for the frontend
+- Render for the backend
+- GitHub Actions for CI
 
-## How It Works
+## Architecture
 
-1. A signed-in user selects a point on the map.
-2. The frontend sends multipart form data to the backend with the image and post metadata.
-3. The backend uploads the image to Amazon S3 using a unique object key.
-4. The backend stores the post metadata, coordinates, and S3 object key in Supabase.
-5. When posts are fetched, the backend generates a signed image URL and returns it to the frontend.
-6. The frontend renders the post on the map and opens a popup with the image, location info, and description.
+```text
+Browser
+  |
+  |-- React frontend ---------------- Supabase Auth
+  |
+  `-- Express API
+        |-- Supabase Postgres
+        |-- Amazon S3
+        `-- Mapbox Geocoding API
+```
 
-## Technical Highlights
-
-- Storage abstraction:
-  The frontend does not build storage URLs directly. The backend returns a ready-to-use `imageUrl`, which makes future storage changes easier.
-
-- Safer media delivery:
-  Images are served through backend-generated signed S3 URLs rather than hardcoded public links.
-
-- Migration workflow:
-  The backend includes a script to migrate legacy images from Supabase Storage into S3 while preserving the same object keys.
-
-- Ownership-aware actions:
-  Users can only delete their own posts from the UI.
+When a user creates a post, the frontend sends the photo and post details to
+the Express API. The API uploads the image to S3 and stores its object key with
+the post data in Supabase. When posts are requested, the API generates signed
+S3 URLs and returns them to the frontend.
 
 ## Project Structure
 
 ```text
 Globe-Pin/
-├── src/                  # React frontend
-├── backend/
-│   ├── src/
-│   │   ├── routes/       # Express routes
-│   │   ├── scripts/      # One-off utility scripts, including S3 migration
-│   │   ├── db.ts         # Supabase server client
-│   │   └── s3.ts         # AWS S3 client configuration
-│   └── package.json
-├── package.json
-└── README.md
+|-- .github/workflows/ci.yml   # Frontend and backend CI checks
+|-- backend/
+|   |-- src/
+|   |   |-- routes/            # Posts, bookmarks, and geocoding routes
+|   |   |-- scripts/           # Data migration utilities
+|   |   |-- app.ts             # Express application
+|   |   |-- db.ts              # Supabase server client
+|   |   `-- s3.ts              # Amazon S3 client
+|   |-- Dockerfile
+|   `-- package.json
+|-- src/                       # React frontend
+|-- Dockerfile                 # Frontend production image
+|-- docker-compose.yml
+|-- package.json
+`-- README.md
 ```
 
-## Local Setup
+## Environment Variables
 
-### Prerequisites
-
-- Node.js
-- npm
-- Supabase project
-- AWS account with an S3 bucket
-- Mapbox account
-
-### Frontend environment variables
-
-Create a root `.env` file:
+Create a `.env` file in the project root:
 
 ```env
 VITE_API_URL=http://localhost:3001
-VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_KEY=your_supabase_anon_key
+VITE_MAPBOX_TOKEN=your_mapbox_public_token
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ```
 
-### Backend environment variables
-
-Create `backend/.env`:
+Create a second file at `backend/.env`:
 
 ```env
-VITE_MAPBOX_TOKEN=your_mapbox_token
-VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASEROLE_KEY=your_supabase_service_role_key
+VITE_MAPBOX_TOKEN=your_mapbox_token
 AWS_ACCESS_KEY_ID=your_aws_access_key_id
 AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-AWS_REGION=your_bucket_region
-AWS_S3_BUCKET=your_bucket_name
-FRONTEND_URL=http://localhost:5173
+AWS_REGION=your_aws_region
+AWS_S3_BUCKET=your_s3_bucket_name
+FRONTEND_URL=http://localhost:8080
 ```
 
-## Running the Project
+Do not commit either `.env` file. The Supabase service-role key and AWS
+credentials must only be used by the backend.
 
-### Install dependencies
+## Run With Docker
+
+Docker is the recommended way to run the complete application.
+
+### Requirements
+
+- Docker Desktop
+- Supabase, AWS, Mapbox, and Google Maps credentials
+- The two environment files described above
+
+From the project root, build and start both services:
 
 ```bash
-npm install
-cd backend && npm install
+docker compose up --build
 ```
 
-### Start the backend
+Open:
+
+```text
+Frontend: http://localhost:8080
+Backend:  http://localhost:3001
+```
+
+The Docker images install their own npm dependencies, so a local
+`node_modules` directory is not required for this setup.
+
+Stop the containers with:
 
 ```bash
-cd /Users/1realjay/Code/Globe-Pin/Globe-Pin/backend
+docker compose down
+```
+
+## Run Without Docker
+
+Use this option for faster frontend development, editor tooling, linting, or
+running each service independently.
+
+### Requirements
+
+- Node.js 20 or newer
+- npm
+- The two environment files described above
+
+Install dependencies:
+
+```bash
+npm ci
+npm ci --prefix backend
+```
+
+Start the backend:
+
+```bash
+npm run dev --prefix backend
+```
+
+In another terminal, start the frontend:
+
+```bash
 npm run dev
 ```
 
-### Start the frontend
+The frontend development server is available at `http://localhost:5173`. When
+using this mode, set `FRONTEND_URL=http://localhost:5173` in `backend/.env`.
+
+## Available Commands
+
+### Frontend
 
 ```bash
-cd /Users/1realjay/Code/Globe-Pin/Globe-Pin
-npm run dev
+npm run dev       # Start the Vite development server
+npm run build     # Type-check and create a production build
+npm run lint      # Run ESLint
+npm run preview   # Preview the production build
 ```
 
-## S3 Migration Script
-
-To copy legacy images from Supabase Storage into S3:
+### Backend
 
 ```bash
-cd /Users/1realjay/Code/Globe-Pin/Globe-Pin/backend
-npm run migrate:s3
+npm run dev --prefix backend      # Start with automatic reload
+npm run build --prefix backend    # Compile TypeScript
+npm start --prefix backend        # Run the compiled server
+npm run migrate:s3 --prefix backend
 ```
 
-What it does:
+## S3 Migration
 
-- reads `image_url` keys from the `posts` table
-- checks whether each object already exists in S3
-- downloads missing files from Supabase Storage
-- uploads them to S3 using the same object key
+The migration command copies legacy post images from Supabase Storage to S3
+while preserving their object keys:
 
-## Deployment
+```bash
+npm run migrate:s3 --prefix backend
+```
 
-- Frontend: Vercel
-- Backend: Render
+The script:
 
-For production, make sure the backend deployment includes the AWS, Supabase, and Mapbox environment variables.
+- Reads image keys from the `posts` table
+- Checks whether each image already exists in S3
+- Downloads missing images from Supabase Storage
+- Uploads them to the configured S3 bucket
 
+n Vercel and
+Render. Local `.env` files are not uploaded to either platform.
