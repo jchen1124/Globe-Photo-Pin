@@ -1,4 +1,13 @@
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass "geogallery-redis"
+    volumes:
+      - redis_data:/data
   backend:
     container_name: globe-pin-backend
     build:
@@ -17,3 +26,7 @@ services:
       - backend
     ports:
       - "8080:80"
+
+volumes:
+  redis_data:
+    driver: local
