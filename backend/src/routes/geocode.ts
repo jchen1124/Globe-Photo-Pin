@@ -9,6 +9,8 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   // console.log("Geocode route called");
+  const start = Date.now();
+
   const { latitude, longitude } = req.query;
 
   if (!latitude || !longitude) {
@@ -31,6 +33,7 @@ router.get("/", async (req, res) => {
     // const data = await response.json();
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
+      console.log(`Cache hit took ${Date.now() - start}ms`);
       console.log("Cache hit for geocode data", cachedData);
       return res.json(JSON.parse(cachedData));
     }
@@ -45,6 +48,7 @@ router.get("/", async (req, res) => {
     await redisClient.set(cacheKey, JSON.stringify({ address: place }), {
       EX: 60 * 5,
     });
+    console.log(`Cache miss took ${Date.now() - start}ms`);
     return res.json({ address: place });
   } catch (error) {
     console.error("Error fetching geocode data:", error);
