@@ -23,6 +23,7 @@ router.get("/", async (req, res) => {
 
         const response = await axios.get(url);
         const place = response.data.features[0]?.place_name || "Unknown location";
+        console.log("Geocode response:", place);
         res.json({ address: place });
         
     }catch(error){
