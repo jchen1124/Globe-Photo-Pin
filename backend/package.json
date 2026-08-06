@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "dev": "ts-node-dev src/index.ts",
     "migrate:s3": "ts-node-dev --exit-child --transpile-only src/scripts/migrateSupabaseImagesToS3.ts"
   },
