@@ -2,6 +2,7 @@
 import { Router } from "express";
 import multer from "multer";
 import { supabase } from "../db";
+import { redisClient } from "../redis";
 
 const router = Router();
 const upload = multer(); // For parsing multipart/form-data
@@ -15,10 +16,24 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3, bucketName } from "../s3";
 
+const SIGNED_URL_EXPIRES_IN_SECONDS = 60 * 60 * 24 * 7; // 7 days
+const SIGNED_URL_CACHE_TTL_SECONDS = 60 * 60 * 24 * 6; // 6 days
+
 const getImageUrl = async (imagePath: string | null) => {
   if (!imagePath) {
     return null;
   }
+
+  const cacheKey = `s3:signed-url:v1:${imagePath}`;
+
+  const cachedUrl = await redisClient.get(cacheKey);
+
+  if (cachedUrl) {
+    console.log("S3 signed URL cache hit:", cacheKey);
+    return cachedUrl;
+  }
+
+  console.log("S3 signed URL cache miss:", cacheKey);
 
   await s3.send(
     new HeadObjectCommand({
@@ -27,16 +42,21 @@ const getImageUrl = async (imagePath: string | null) => {
     }),
   );
 
-  return getSignedUrl(
+  const signedUrl = await getSignedUrl(
     s3,
     new GetObjectCommand({
       Bucket: bucketName,
       Key: imagePath,
     }),
-    { expiresIn: 604800 },
+    { expiresIn: SIGNED_URL_EXPIRES_IN_SECONDS },
   );
-};
 
+  await redisClient.set(cacheKey, signedUrl, {
+    EX: SIGNED_URL_CACHE_TTL_SECONDS,
+  });
+
+  return signedUrl;
+};
 
 router.get("/", async (req, res) => {
   const { user_id } = req.query;
