@@ -178,6 +178,7 @@ router.delete("/:id", async (req, res) => {
           Key: postData.image_url,
         }),
       );
+      await redisClient.del(`s3:signed-url:v1:${postData.image_url}`);
     } catch (error) {
       console.error("Error removing image from storage:", error);
     }
