@@ -1,4 +1,4 @@
-// Upload, Delete and Image Retrieval logic
+// Upload, delete, and image retrieval logic.
 import { Router } from "express";
 import multer from "multer";
 import { supabase } from "../db";
@@ -17,6 +17,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3, bucketName } from "../s3";
 
 const SIGNED_URL_EXPIRES_IN_SECONDS = 60 * 60 * 24 * 7; // 7 days
+// Keep Redis shorter than the S3 URL lifetime so cached URLs expire first.
 const SIGNED_URL_CACHE_TTL_SECONDS = 60 * 60 * 24 * 6; // 6 days
 
 const getImageUrl = async (imagePath: string | null) => {
@@ -26,6 +27,7 @@ const getImageUrl = async (imagePath: string | null) => {
 
   const cacheKey = `s3:signed-url:v1:${imagePath}`;
 
+  // Reuse signed URLs while they are still safely inside their expiration window.
   const cachedUrl = await redisClient.get(cacheKey);
 
   if (cachedUrl) {
@@ -35,6 +37,7 @@ const getImageUrl = async (imagePath: string | null) => {
 
   console.log("S3 signed URL cache miss:", cacheKey);
 
+  // Verify the object exists before generating a URL that the frontend will use.
   await s3.send(
     new HeadObjectCommand({
       Bucket: bucketName,
@@ -51,6 +54,7 @@ const getImageUrl = async (imagePath: string | null) => {
     { expiresIn: SIGNED_URL_EXPIRES_IN_SECONDS },
   );
 
+  // Store the generated access URL so future post fetches can skip signing work.
   await redisClient.set(cacheKey, signedUrl, {
     EX: SIGNED_URL_CACHE_TTL_SECONDS,
   });
@@ -100,7 +104,8 @@ router.post("/", upload.single("image"), async (req, res) => {
     const fileExtension = imageFile.originalname.split(".").pop();
     const fileName = `${user_id}-${Date.now()}.${fileExtension}`;
 
-    // Upload image FIRST
+    // Upload the image before inserting the post so the database never points
+    // at an object that failed to upload.
     try {
       await s3.send(
         new PutObjectCommand({
@@ -115,7 +120,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       return res.status(500).json({ error: "Failed to upload image" });
     }
 
-    // ONLY if image succeeds, insert into database
+    // Only after the S3 upload succeeds do we persist the post metadata.
     const createdAt = new Date().toISOString();
     const { error: insertError } = await supabase.from("posts").insert({
       user_id,
@@ -129,7 +134,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     if (insertError) {
       console.error("Database insert error:", insertError);
-      // Delete image if database fails
+      // Roll back the uploaded object if the database insert fails.
       await s3
         .send(
           new DeleteObjectCommand({
@@ -155,7 +160,7 @@ router.delete("/:id", async (req, res) => {
     return res.status(400).json({ error: "Invalid post ID" });
   }
 
-  // 1. Fetch the post to get the image_url
+  // Fetch the S3 object key before deleting the row so storage can be cleaned up.
   const { data: postData, error: fetchError } = await supabase
     .from("posts")
     .select("image_url")
@@ -169,7 +174,7 @@ router.delete("/:id", async (req, res) => {
     return res.status(404).json({ error: "Post not found" });
   }
 
-  // 2. Remove the image from S3
+  // Remove the image and invalidate its cached signed URL.
   if (postData.image_url) {
     try {
       await s3.send(
@@ -184,7 +189,7 @@ router.delete("/:id", async (req, res) => {
     }
   }
 
-  // 3. Delete the post
+  // Delete the database row after storage cleanup has been attempted.
   const { data, error } = await supabase
     .from("posts")
     .delete()
