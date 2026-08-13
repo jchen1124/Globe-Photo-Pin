@@ -69,7 +69,9 @@ Browser
 When a user creates a post, the frontend sends the photo and post details to
 the Express API. The API uploads the image to S3 and stores its object key with
 the post data in Supabase. When posts are requested, the API generates signed
-S3 URLs and returns them to the frontend.
+S3 URLs and returns them to the frontend. Signed S3 URLs are cached in Redis so
+repeated post fetches can reuse valid access URLs instead of regenerating them
+for every image.
 
 Reverse geocoding requests are cached with Redis. When the frontend asks for a
 readable address from latitude and longitude coordinates, the API first checks
@@ -244,7 +246,11 @@ The script:
 - Downloads missing images from Supabase Storage
 - Uploads them to the configured S3 bucket
 
-## Reverse Geocoding Cache
+## Redis Caching
+
+Redis is used for backend caches that avoid repeated external service work.
+
+### Reverse Geocoding
 
 The `/geocode` route uses Redis to cache Mapbox reverse-geocoding responses.
 The cache key is based on rounded coordinates:
@@ -266,6 +272,34 @@ calling Mapbox again.
 
 This improves response time for frequently viewed posts, reduces repeated
 external API calls, and lowers the chance of hitting Mapbox rate limits.
+
+### S3 Signed URLs
+
+The `/api/posts` route uses Redis to cache signed S3 URLs for post images.
+Supabase stores the S3 object key for each post, and the backend turns that key
+into a temporary signed URL that the frontend can use in image tags.
+
+The cache key is based on the S3 object key:
+
+```text
+s3:signed-url:v1:<image-key>
+```
+
+Example:
+
+```text
+s3:signed-url:v1:user-id-1720000000000.jpg
+```
+
+On a cache miss, the API verifies the object exists in S3, generates a signed
+URL, stores it in Redis, and returns it with the post data. On a cache hit, the
+API returns the cached signed URL and skips the S3 object check and signing
+work.
+
+Signed URLs are generated with a seven-day expiration, while Redis stores them
+for six days. The shorter Redis TTL prevents the API from returning a cached URL
+after the S3 URL has expired. When a post is deleted, the API also removes that
+image's cached signed URL from Redis.
 
 Deployment is handled by Vercel and Render. Local `.env` files are not uploaded
 to either platform.
