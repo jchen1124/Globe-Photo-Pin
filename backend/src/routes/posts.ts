@@ -3,6 +3,7 @@ import { Router } from "express";
 import multer from "multer";
 import { supabase } from "../db";
 import { redisClient } from "../redis";
+import { uploadRateLimiter } from "../middleware/rateLimit";
 
 const router = Router();
 const upload = multer(); // For parsing multipart/form-data
@@ -88,7 +89,7 @@ router.get("/", async (req, res) => {
   res.json(postsWithImageUrls);
 });
 
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", uploadRateLimiter, upload.single("image"), async (req, res) => {
   try {
     const { description, latitude, longitude, user_id, photo_date } = req.body;
     const imageFile = req.file;
