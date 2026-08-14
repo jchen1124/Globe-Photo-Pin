@@ -2,12 +2,13 @@ import axios from "axios";
 import { Router } from "express";
 import dotenv from "dotenv";
 import { redisClient } from "../redis";
+import { geocodeRateLimiter } from "../middleware/rateLimit";
 
 dotenv.config();
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", geocodeRateLimiter, async (req, res) => {
   // console.log("Geocode route called");
   const start = Date.now();
 

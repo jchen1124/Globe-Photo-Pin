@@ -8,10 +8,10 @@ const createRedisStore = (prefix: string) =>
     sendCommand: (...args: string[]) => redisClient.sendCommand(args),
   });
 
-// 60 Requests per minute for geocoding requests
+// 50 Requests per minute for geocoding requests
 export const geocodeRateLimiter = rateLimit({
     windowMs: 60 * 1000,
-    limit: 60,
+    limit: 50,
     standardHeaders: "draft-8",
     legacyHeaders: false,
     message: {
