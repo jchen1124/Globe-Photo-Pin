@@ -5,6 +5,7 @@ import geocodeRoutes from "./routes/geocode";
 import bookmarksRoutes from "./routes/bookmarks";
 
 const app = express();
+app.set("trust proxy", 1); // Trust first proxy for rate limiting
 const allowedOrigins = [
   "https://mygeogallery.com",
   process.env.FRONTEND_URL,
