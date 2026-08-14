@@ -8,15 +8,25 @@ const createRedisStore = (prefix: string) =>
     sendCommand: (...args: string[]) => redisClient.sendCommand(args),
   });
 
-  export const geocodeRateLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  limit: 60,
+export const geocodeRateLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 60,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    message: {
+    error: "Too many geocoding requests. Please try again soon.",
+    },
+    store: createRedisStore("rate-limit:geocode:"),
+});
+
+export const uploadRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 10,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   message: {
-    error: "Too many geocoding requests. Please try again soon.",
+    error: "Too many uploads. Please try again later.",
   },
-  store: createRedisStore("rate-limit:geocode:"),
+  store: createRedisStore("rate-limit:uploads:"),
 });
-
 
