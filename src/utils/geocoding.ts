@@ -3,8 +3,12 @@ async function getAddressFromCoords(latitude: number, longitude: number) {
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/geocode?latitude=${latitude}&longitude=${longitude}`,
   );
+  if (response.status === 429) {
+    return "Location lookup paused. Try again shortly.";
+  }
+
   const data = await response.json();
-//   console.log("Received geocode data:", data);
+  //   console.log("Received geocode data:", data);
   return data.address;
 }
 
