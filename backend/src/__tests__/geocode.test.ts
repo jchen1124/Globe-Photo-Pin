@@ -1,4 +1,5 @@
 import express from "express";
+import type { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import axios from "axios";
@@ -12,6 +13,11 @@ vi.mock("../redis", () => ({
     get: vi.fn(),
     set: vi.fn(),
   },
+}));
+
+vi.mock("../middleware/rateLimit", () => ({
+  geocodeRateLimiter: (_req: Request, _res: Response, next: NextFunction) =>
+    next(),
 }));
 
 const mockedAxios = vi.mocked(axios);
