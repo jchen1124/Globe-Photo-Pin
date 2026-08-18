@@ -8,6 +8,11 @@ The project was originally developed as Globe Pin and combines a React
 frontend with an Express API, Supabase authentication and data storage, Amazon
 S3 image storage, Redis caching and rate limiting, and Mapbox mapping services.
 
+<p align="center">
+<img src="./src/assets/geogallery.png" width="100%"/>
+
+</p>
+
 ## Features
 
 - Explore geotagged posts on an interactive global map
