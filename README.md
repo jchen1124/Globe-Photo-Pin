@@ -6,7 +6,7 @@ interactive global map.
 
 The project was originally developed as Globe Pin and combines a React
 frontend with an Express API, Supabase authentication and data storage, Amazon
-S3 image storage, Redis caching, and Mapbox mapping services.
+S3 image storage, Redis caching and rate limiting, and Mapbox mapping services.
 
 ## Features
 
@@ -16,6 +16,8 @@ S3 image storage, Redis caching, and Mapbox mapping services.
 - Sign in with Google through Supabase Auth
 - Filter the map to show only your posts
 - Bookmark posts and browse saved places
+- Cache reverse geocoding and signed image URLs with Redis
+- Rate limit expensive geocoding and upload routes
 - View and delete your own posts
 - Switch between colorful light and satellite dark map themes
 - Use your current location when creating a post
@@ -40,6 +42,8 @@ S3 image storage, Redis caching, and Mapbox mapping services.
 - Multer for image uploads
 - AWS SDK for S3
 - Redis for backend caching
+- `express-rate-limit` and Redis-backed request limits
+- Vitest and Supertest for backend route tests
 
 ### Services
 
@@ -62,7 +66,7 @@ Browser
   `-- Express API
         |-- Supabase Postgres
         |-- Amazon S3
-        |-- Redis cache
+        |-- Redis cache / rate limit store
         `-- Mapbox Geocoding API
 ```
 
@@ -79,6 +83,10 @@ Redis using a rounded coordinate cache key. Cache hits return immediately from
 Redis, while cache misses call the Mapbox Geocoding API, store the result in
 Redis with a TTL, and then return it to the frontend.
 
+Redis is also used as the shared store for API rate limiting. This protects
+high-cost routes such as reverse geocoding and image uploads from repeated
+bursts of traffic before they reach Mapbox, S3, or the database.
+
 ## Project Structure
 
 ```text
@@ -86,6 +94,8 @@ Globe-Pin/
 |-- .github/workflows/ci.yml   # Frontend and backend CI checks
 |-- backend/
 |   |-- src/
+|   |   |-- __tests__/         # Backend route tests
+|   |   |-- middleware/        # Express middleware such as rate limiting
 |   |   |-- routes/            # Posts, bookmarks, and geocoding routes
 |   |   |-- scripts/           # Data migration utilities
 |   |   |-- app.ts             # Express application
@@ -135,6 +145,9 @@ Use `REDIS_URL=redis://localhost:6379` when the backend runs locally with
 `npm run dev --prefix backend` and only the Redis container is running in
 Docker. In production on Render, use the internal URL from the Render Key Value
 instance.
+
+The backend must connect to Redis before the Express app imports routes that
+create Redis-backed rate limiters.
 
 ## Run With Docker
 
@@ -226,6 +239,8 @@ npm run preview   # Preview the production build
 ```bash
 npm run dev --prefix backend      # Start with automatic reload
 npm run build --prefix backend    # Compile TypeScript
+npm test --prefix backend         # Run backend route tests
+npm run test:watch --prefix backend
 npm start --prefix backend        # Run the compiled server
 npm run migrate:s3 --prefix backend
 ```
@@ -301,5 +316,24 @@ for six days. The shorter Redis TTL prevents the API from returning a cached URL
 after the S3 URL has expired. When a post is deleted, the API also removes that
 image's cached signed URL from Redis.
 
-Deployment is handled by Vercel and Render. Local `.env` files are not uploaded
-to either platform.
+## API Rate Limiting
+
+The backend uses `express-rate-limit` with Redis as the shared store for
+request counters. This keeps limits consistent if the backend runs multiple
+instances and avoids relying on per-process memory.
+
+Current protected routes:
+
+- `/geocode`: limits repeated reverse-geocoding requests
+- `POST /api/posts`: limits image upload attempts before Multer parses files
+
+When a client exceeds a limit, the middleware returns:
+
+```text
+429 Too Many Requests
+```
+
+Rate limit headers are enabled so clients can inspect remaining quota and reset
+timing. In production behind Render's proxy, Express should trust the proxy so
+IP-based limiting uses the forwarded client IP instead of the proxy address.
+
