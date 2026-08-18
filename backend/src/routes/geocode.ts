@@ -9,7 +9,8 @@ dotenv.config();
 const router = Router();
 
 router.get("/", geocodeRateLimiter, async (req, res) => {
-  // console.log("Geocode route called");
+    console.log("Geocode requester IP:", req.ip);
+    console.log("Geocode rate limit info:", (req as any).rateLimit);
   const start = Date.now();
 
   const { latitude, longitude } = req.query;

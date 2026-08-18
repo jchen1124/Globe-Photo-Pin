@@ -11,8 +11,10 @@ const createRedisStore = (prefix: string) =>
 // 50 Requests per minute for geocoding requests
 export const geocodeRateLimiter = rateLimit({
     windowMs: 60 * 1000,
-    limit: 50,
+    limit: 60,
     standardHeaders: "draft-8",
+    // for logging purposes, we can store the rate limit info in the request object
+    requestPropertyName: "rateLimit",
     legacyHeaders: false,
     message: {
     error: "Too many geocoding requests. Please try again soon.",
