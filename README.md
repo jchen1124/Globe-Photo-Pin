@@ -1,4 +1,6 @@
-# GeoGallery v2.0
+<h1 align="center"> 
+GeoGallery v2.0
+</h1>
 
 GeoGallery is a full-stack photo mapping application where users can upload
 photos, pin them to real-world locations, and revisit their memories through an
