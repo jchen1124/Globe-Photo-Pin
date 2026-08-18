@@ -76,7 +76,7 @@ describe("GET /api/posts signed URL cache", () => {
     ]);
 
     vi.mocked(redisClient.get).mockResolvedValue(null);
-    vi.mocked(s3.send).mockResolvedValue({});
+    vi.mocked(s3.send).mockResolvedValue();
     vi.mocked(getSignedUrl).mockResolvedValue("https://signed-s3-url.test");
 
     const response = await request(createTestApp()).get("/api/posts");
