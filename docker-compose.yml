@@ -1,4 +1,15 @@
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    # environment:
+    #   - REDIS_PASSWORD=${REDIS_URL}
+    # command: sh -c "redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""
+    volumes:
+      - redis_data:/data
   backend:
     container_name: globe-pin-backend
     build:
@@ -6,6 +17,8 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./backend/.env
+    depends_on:
+      - redis
     ports:
       - "3001:3001"
 
@@ -17,3 +30,7 @@ services:
       - backend
     ports:
       - "8080:80"
+
+volumes:
+  redis_data:
+    driver: local

@@ -66,8 +66,8 @@ const MapView = () => {
       zoom: isMobile ? 2 : 2.1,
     };
   });
-  const [isMobileLayout, setIsMobileLayout] = useState(() =>
-    window.matchMedia("(max-width: 768px)").matches,
+  const [isMobileLayout, setIsMobileLayout] = useState(
+    () => window.matchMedia("(max-width: 768px)").matches,
   );
 
   // Pin Marker State
@@ -99,8 +99,9 @@ const MapView = () => {
     new Set(),
   );
 
-  const isSelectedPostBookmarked =
-    selectedPost ? bookmarkedPostIds.has(selectedPost.id) : false;
+  const isSelectedPostBookmarked = selectedPost
+    ? bookmarkedPostIds.has(selectedPost.id)
+    : false;
 
   const [confirmatinOpen, setConfirmationOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
@@ -456,7 +457,10 @@ const MapView = () => {
             longitude={selectedLocation.longitude}
             anchor="bottom"
           >
-            <div className="draft-location-marker" aria-label="New post location">
+            <div
+              className="draft-location-marker"
+              aria-label="New post location"
+            >
               <RoomIcon />
             </div>
           </Marker>
@@ -511,7 +515,9 @@ const MapView = () => {
                   {user && (
                     <button
                       className={`popup-icon-button ${
-                        isSelectedPostBookmarked ? "popup-icon-button-active" : ""
+                        isSelectedPostBookmarked
+                          ? "popup-icon-button-active"
+                          : ""
                       }`}
                       onClick={() => handleToggleBookmark(selectedPost)}
                       aria-label={
@@ -632,6 +638,14 @@ const MapView = () => {
                     body: data,
                   },
                 );
+                
+                if (response.status === 429) {
+                  showAlert(
+                    "Too many uploads. Please try again later.",
+                    "error",
+                  );
+                  return;
+                }
 
                 if (!response.ok) {
                   const errorData = await response.json().catch(() => ({}));

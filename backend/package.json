@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "dev": "ts-node-dev src/index.ts",
     "migrate:s3": "ts-node-dev --exit-child --transpile-only src/scripts/migrateSupabaseImagesToS3.ts"
   },
@@ -21,8 +22,11 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
     "multer": "^2.0.2",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "rate-limit-redis": "^6.0.1",
+    "redis": "^6.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -30,7 +34,10 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^25.0.3",
     "@types/pg": "^8.16.0",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.2.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
   }
 }
