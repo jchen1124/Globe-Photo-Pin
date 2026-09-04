@@ -17,13 +17,17 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import AddLocationAltOutlinedIcon from "@mui/icons-material/AddLocationAltOutlined";
+import CollectionsBookmarkOutlinedIcon from "@mui/icons-material/CollectionsBookmarkOutlined";
 import ConfirmationModal from "./ConfirmationModal";
 
 type MapViewState = {
   longitude: number;
   latitude: number;
   zoom: number;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 type ThemeMode = "light" | "dark";
@@ -87,6 +91,8 @@ const MapView = () => {
 
   // Image Modal State
   const [isImageModalOpen, setIsImageModalOpen] = useState<boolean>(false);
+
+  const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
 
   // myposts state
   const [showMyPostsOnly, setShowMyPostsOnly] = useState(false);
@@ -181,6 +187,21 @@ const MapView = () => {
   useEffect(() => {
     fetchBookmarkedPostIds();
   }, [user]);
+
+  useEffect(() => {
+    if (!isGuideOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsGuideOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isGuideOpen]);
 
   useEffect(() => {
     if (!selectedLocation) {
@@ -409,6 +430,7 @@ const MapView = () => {
           setShowBookmarkedOnly={setShowBookmarkedOnly}
           onUseCurrentLocation={useCurrentLocation}
           themeMode={themeMode}
+          onOpenHelp={() => setIsGuideOpen(true)}
           onToggleTheme={() =>
             setThemeMode((currentTheme) =>
               currentTheme === "light" ? "dark" : "light",
@@ -416,6 +438,89 @@ const MapView = () => {
           }
         />
       </div>
+
+      {isGuideOpen && (
+        <div
+          className="guide-modal-overlay"
+          onClick={() => setIsGuideOpen(false)}
+          role="presentation"
+        >
+          <section
+            className="guide-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="guide-modal-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="guide-modal-close"
+              onClick={() => setIsGuideOpen(false)}
+              aria-label="Close guide"
+              title="Close guide"
+            >
+              <CloseOutlinedIcon fontSize="small" />
+            </button>
+
+            <div className="guide-modal-header">
+              <p className="guide-modal-kicker">Quick guide</p>
+              <h2 id="guide-modal-title">How to use GeoGallery</h2>
+              <p>
+                Search for a place, browse shared photo pins, or click the map
+                to start saving your own memories.
+              </p>
+            </div>
+
+            <div className="guide-steps">
+              <article className="guide-step">
+                <span className="guide-step-icon">
+                  <SearchOutlinedIcon fontSize="small" />
+                </span>
+                <div>
+                  <h3>Find a place</h3>
+                  <p>
+                    Use search or drag around the map to explore places by
+                    location.
+                  </p>
+                </div>
+              </article>
+
+              <article className="guide-step">
+                <span className="guide-step-icon">
+                  <AddLocationAltOutlinedIcon fontSize="small" />
+                </span>
+                <div>
+                  <h3>Drop a pin</h3>
+                  <p>
+                    Click the map to choose a spot, then add a photo, date, and
+                    short note.
+                  </p>
+                </div>
+              </article>
+
+              <article className="guide-step">
+                <span className="guide-step-icon">
+                  <CollectionsBookmarkOutlinedIcon fontSize="small" />
+                </span>
+                <div>
+                  <h3>Save what matters</h3>
+                  <p>
+                    Open pins to view details, bookmark favorites, and filter
+                    back to your own posts.
+                  </p>
+                </div>
+              </article>
+            </div>
+
+            {!user && (
+              <div className="guide-modal-note">
+                Sign in when you are ready to publish photos, bookmark places,
+                and keep your map across visits.
+              </div>
+            )}
+          </section>
+        </div>
+      )}
 
       {/* if bookedmarked is true then we open side menu */}
       <SavedPostsPanel
