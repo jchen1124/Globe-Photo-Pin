@@ -367,6 +367,169 @@
   cursor: default;
 }
 
+.guide-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(9, 19, 24, 0.48);
+  backdrop-filter: blur(6px);
+  animation: guideOverlayIn 0.2s ease-out;
+}
+
+.guide-modal {
+  position: relative;
+  width: min(92vw, 520px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: 20px;
+  background: rgba(252, 253, 252, 0.98);
+  color: #17252d;
+  box-shadow: 0 28px 80px rgba(5, 18, 27, 0.34);
+  font-family:
+    Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  animation: guideModalIn 0.22s ease-out;
+}
+
+.guide-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #dbe2e3;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #526167;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.guide-modal-close:hover {
+  background: #f0f3f3;
+  color: #17252d;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(5, 18, 27, 0.12);
+}
+
+.guide-modal-close:focus-visible {
+  outline: 2px solid #a4493d;
+  outline-offset: 2px;
+}
+
+.guide-modal-header {
+  padding: 28px 72px 22px 28px;
+  border-bottom: 1px solid #e5eaeb;
+}
+
+.guide-modal-kicker {
+  margin: 0 0 8px;
+  color: #a4493d;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.guide-modal h2 {
+  margin: 0;
+  color: #24343a;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  line-height: 1.12;
+}
+
+.guide-modal-header p:not(.guide-modal-kicker) {
+  margin: 10px 0 0;
+  color: #69787e;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+}
+
+.guide-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: transparent;
+}
+
+.guide-step-icon {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #dce4e4;
+  border-radius: 12px;
+  background: #f7f9f8;
+  color: #a4493d;
+  display: grid;
+  place-items: center;
+}
+
+.guide-step h3 {
+  margin: 0;
+  color: #2c3d43;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.guide-step p {
+  margin: 4px 0 0;
+  color: #748187;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.guide-modal-note {
+  margin: 0 26px 26px;
+  padding: 13px 14px;
+  border: 1px solid #e3e9e8;
+  border-radius: 12px;
+  background: #f6f8f7;
+  color: #526267;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@keyframes guideOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes guideModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .confirmation-modal-overlay {
   position: fixed;
   inset: 0;
@@ -717,6 +880,38 @@
     top: 90px;
     right: 20px;
   }
+
+  .guide-modal-overlay {
+    align-items: flex-end;
+    padding: 14px;
+  }
+
+  .guide-modal {
+    width: 100%;
+    max-height: calc(100vh - 28px);
+    overflow-y: auto;
+    border-radius: 20px;
+  }
+
+  .guide-modal-header {
+    padding: 26px 64px 20px 22px;
+  }
+
+  .guide-modal h2 {
+    font-size: 24px;
+  }
+
+  .guide-steps {
+    padding: 10px;
+  }
+
+  .guide-step {
+    padding: 12px;
+  }
+
+  .guide-modal-note {
+    margin: 0 20px 20px;
+  }
 }
 
 @keyframes composerSheetIn {
@@ -839,6 +1034,50 @@
 .map-page[data-theme="dark"] .confirmation-modal-cancel {
   background: rgba(255, 255, 255, 0.1);
   color: #edf3f4;
+}
+
+.map-page[data-theme="dark"] .guide-modal {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(20, 30, 35, 0.98);
+  color: #f2f6f7;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
+}
+
+.map-page[data-theme="dark"] .guide-modal-close {
+  border-color: #41535a;
+  background: #26363d;
+  color: #bdc9cc;
+}
+
+.map-page[data-theme="dark"] .guide-modal-close:hover {
+  background: #35474e;
+  color: #ffffff;
+}
+
+.map-page[data-theme="dark"] .guide-modal-header {
+  border-bottom-color: #34454c;
+}
+
+.map-page[data-theme="dark"] .guide-modal h2,
+.map-page[data-theme="dark"] .guide-step h3 {
+  color: #edf3f4;
+}
+
+.map-page[data-theme="dark"] .guide-modal-header p:not(.guide-modal-kicker),
+.map-page[data-theme="dark"] .guide-step p {
+  color: #9dabb0;
+}
+
+.map-page[data-theme="dark"] .guide-step-icon {
+  border-color: #41535a;
+  background: #26363d;
+  color: #f3b5aa;
+}
+
+.map-page[data-theme="dark"] .guide-modal-note {
+  border-color: #34454c;
+  background: #26363d;
+  color: #c5d0d3;
 }
 
 .map-page[data-theme="dark"] .address-search-container {

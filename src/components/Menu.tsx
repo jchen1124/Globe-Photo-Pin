@@ -5,6 +5,7 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import MyLocationOutlinedIcon from "@mui/icons-material/MyLocationOutlined";
 import PhotoLibraryOutlinedIcon from "@mui/icons-material/PhotoLibraryOutlined";
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import { useAuth } from "../context/AuthContext";
@@ -21,6 +22,7 @@ type MenuProps = {
   onUseCurrentLocation?: () => void;
   themeMode: ThemeMode;
   onToggleTheme: () => void;
+  onOpenHelp: () => void;
 };
 
 const Menu = ({
@@ -31,6 +33,7 @@ const Menu = ({
   onUseCurrentLocation,
   themeMode,
   onToggleTheme,
+  onOpenHelp,
 }: MenuProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -38,6 +41,27 @@ const Menu = ({
 
   const fullName = user?.user_metadata.full_name || "Guest";
   const firstName = fullName.split(" ")[0];
+
+  const helpOption = (
+    <button
+      type="button"
+      className="menu-option"
+      onClick={() => {
+        onOpenHelp();
+        setOpen(false);
+      }}
+      role="menuitem"
+    >
+      <span className="menu-option-icon">
+        <HelpOutlineOutlinedIcon fontSize="small" />
+      </span>
+      <span className="menu-option-copy">
+        <strong>How it works</strong>
+        <small>Get a quick guide to using the map</small>
+      </span>
+    </button>
+  );
+
   const themeOption = (
     <button
       type="button"
@@ -109,6 +133,8 @@ const Menu = ({
                 </span>
               </button>
             )}
+
+            {helpOption}
 
             <button
               type="button"
@@ -182,6 +208,7 @@ const Menu = ({
                 <small>Continue with your account</small>
               </span>
             </button>
+            {helpOption}
             {themeOption}
           </div>
         </div>
